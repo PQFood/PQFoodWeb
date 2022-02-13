@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const port = 8080
 const path = require('path');
 const morgan = require('morgan');
 
@@ -45,7 +44,7 @@ route(app);
 
 
 
-app.listen(port || process.env.PORT)
+app.listen(process.env.PORT || 8080)
 
 
 

@@ -37,6 +37,11 @@ app.use(express.static(path.join(__dirname, 'public/')));
 // app.set('view options', { layout: 'admin' });
 // app.set('view options', { layout: 'staff' });
 
+
+//database
+const db = require('./config/db')
+db.connect()
+
 //xac dinh tuyen duong
 const route = require('./routes');
 route(app);

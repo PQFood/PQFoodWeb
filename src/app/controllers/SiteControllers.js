@@ -1,3 +1,5 @@
+const chuquan = require('../models/chuquan');
+
 
 class SiteController {
     
@@ -6,8 +8,10 @@ class SiteController {
     }
 
    async test(req,res,next){
-       res.render('test')
+    var hienthi = await chuquan.find({})
+    res.json(hienthi)
    }
+
 
 }
 

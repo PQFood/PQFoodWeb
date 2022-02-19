@@ -2,8 +2,9 @@
     // "use strict";
     $(".nav-link").on("click", function () {
         $(".nav-link").removeClass("active");
-        $( this ).addClass("active");
+        $(this).addClass("active");
     });
+
 
 
 
@@ -31,6 +32,32 @@
         }
     });
 
+
+    $("#formLogin").validate({
+        rules: {
+            userLogin: "required",
+            passwordLogin: "required",
+        },
+        messages: {
+            userLogin: "Vui lòng điền vào tên đăng nhập!",
+            passwordLogin: "Vui lòng điền vào mật khẩu!",
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
 
     // Dropdown on mouse hover
     const $dropdown = $(".dropdown");

@@ -158,7 +158,7 @@
 
 /*** Hero Header ***/
 .hero-header {
-    background: linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(../img/bg-hero.jpg);
+    background: linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(https://res.cloudinary.com/pqshop/image/upload/v1645343741/pqfood/ca-kho-to_dzjliq.jpg);
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;

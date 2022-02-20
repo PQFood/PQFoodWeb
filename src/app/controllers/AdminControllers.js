@@ -5,11 +5,17 @@ class SiteController {
     
     async index(req, res, next) {
         res.render(
-            'home',{
+            'homeAdmin',{
             layout: 'admin'
         })
     }
 
+    async addFood(req, res, next){
+        res.render(
+            'addFood',{
+            layout: 'admin'
+        })
+    }
 
 
 }

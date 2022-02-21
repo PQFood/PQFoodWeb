@@ -1,49 +1,46 @@
-<div class="col-md-6 bg-dark d-flex align-items-center" id="cach">
-            <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
-                <h5 class="section-title ff-secondary text-start text-primary fw-normal">Đặt chỗ</h5>
-                <h1 class="text-white mb-4">Đặt bàn online</h1>
-                <form>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="name" placeholder="Họ và tên">
-                                <label for="name">Họ và tên</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="phone" placeholder="Số điện thoại">
-                                <label for="email">Số điện thoại</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating date" id="date3" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="datetime"
-                                    placeholder="Thời gian" data-target="#date3" data-toggle="datetimepicker" />
-                                <label for="datetime">Thời gian</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="select1">
-                                    <option value="1">1 Người</option>
-                                    <option value="2">2 Người</option>
-                                    <option value="3">3 Người</option>
-                                </select>
-                                <label for="select1">Số người</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-floating">
-                                <textarea class="form-control" placeholder="Ghi chú" id="message"
-                                    style="height: 100px"></textarea>
-                                <label for="message">Ghi chú</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary w-100 py-3" type="submit">Đặt ngay</button>
-                        </div>
+<div class="col bg-dark d-flex align-items-center" id="cach">
+    <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
+        <h5 class="section-title ff-secondary text-start text-primary fw-normal">Thêm thức ăn/thức uống</h5>
+        <form>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="nameFood" name="nameFood" placeholder="Tên thức ăn/thức uống">
+                        <label for="name">Tên thức ăn/thức uống</label>
                     </div>
-                </form>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="price" name="price" placeholder="Giá (VNĐ)">
+                        <label for="email">Giá (VNĐ)</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="file" class="form-control" id="image" name="image" placeholder="Hình ảnh">
+                        <label for="email">Hình ảnh</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="classify" name="classify">
+                            <option value="food">Thức ăn</option>
+                            <option value="drink">Thức uống</option>
+                        </select>
+                        <label for="classify">Loại</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Mô tả chi tiết" id="description" name="description"
+                            style="height: 100px"></textarea>
+                        <label for="description">Mô tả chi tiết</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-primary w-100 py-3" type="submit">Thêm</button>
+                </div>
             </div>
-        </div>
+        </form>
+    </div>
+</div>

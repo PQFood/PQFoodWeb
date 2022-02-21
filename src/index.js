@@ -55,6 +55,7 @@ app.set('views', path.join(__dirname, 'resources/views'));
 //set public
 app.use(express.static(path.join(__dirname, 'public/')));
 
+console.log(path.join(__dirname, 'public/'))
 // // set view 
 app.set('view options', { layout: 'admin' });
 // app.set('view options', { layout: 'admin' });

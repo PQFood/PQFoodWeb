@@ -4,10 +4,8 @@ const authAdmin = require('../util/validateAdmin')
 
 function route(app) {
 
-  
-    app.use('/',siteRouter);
     app.use('/admin',authAdmin.requireAuth,adminRouter);
-
+    app.use('/',siteRouter);
 }
 
 module.exports = route;

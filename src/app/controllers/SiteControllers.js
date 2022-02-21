@@ -38,6 +38,12 @@ class SiteController {
         }
     }
 
+    async test(req, res, next){
+        res.render(
+            'addFood',{
+            layout: 'admin'
+        })
+    }
 
 }
 

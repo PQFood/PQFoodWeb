@@ -24,6 +24,11 @@ class SiteController {
         })
     }
 
+    async submitAddForm(req, res, next){
+        res.json(req.body)
+
+    }
+
 }
 
 module.exports = new SiteController();

@@ -32,7 +32,7 @@
         }
     });
 
-
+    //check form login
     $("#formLogin").validate({
         rules: {
             userLogin: "required",
@@ -59,6 +59,128 @@
         },
     });
 
+    //check form add food
+    $("#formAddFood").validate({
+        rules: {
+            nameFood: "required",
+            price: {
+                required: true,
+                digits: true,
+                min:1000,
+                max: 100000000
+            },
+            image: "required",
+            description: "required",
+        },
+        messages: {
+            nameFood: "Vui lòng nhập vào tên thức ăn/thức uống!",
+            price: {
+                required: "Vui lòng nhập vào giá!",
+                digits: "Vui lòng nhập vào số!",
+                min: "Nhập vào giá lớn hơn 1000!",
+                max: "Nhập vào giá nhỏ hơn 100.000.000đ!"
+            },
+            image: "Vui lòng chọn hình ảnh!",
+            description: "Vui lòng nhập vào mô tả!",
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
+
+    //check form book table
+    $("#formBookTable").validate({
+        rules: {
+            name: "required",
+            phoneNumber: {
+                required: true,
+                digits: true,
+                // matches: "[0-9]+",
+                minlength: 10,
+                maxlength: 11,
+            },
+            timeBook: "required",
+        },
+        messages: {
+            name: "Vui lòng nhập vào họ và tên",
+            phoneNumber: {
+                required: "Vui lòng nhập vào số điện thoại!",
+                digits: "Vui lòng nhập vào đúng cú pháp số điện thoại!",
+                // matches: "Số điện thoại bắt đầu bằng 0",
+                minlength: "Số điện thoại quá ngắn!",
+                maxlength: "Số điện thoại quá dài",
+            },
+            timeBook: "Vui lòng chọn thời gian!",
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
+
+    //check form book ship
+    $("#formShip").validate({
+        rules: {
+            name: "required",
+            phoneNumber: {
+                required: true,
+                digits: true,
+                // matches: "[0-9]+",
+                minlength: 10,
+                maxlength: 11,
+            },
+            note: "required",
+        },
+        messages: {
+            name: "Vui lòng nhập vào họ và tên!",
+            phoneNumber: {
+                required: "Vui lòng nhập vào số điện thoại!",
+                digits: "Vui lòng nhập vào đúng cú pháp số điện thoại!",
+                // matches: "Số điện thoại bắt đầu bằng 0",
+                minlength: "Số điện thoại quá ngắn!",
+                maxlength: "Số điện thoại quá dài",
+            },
+            note: "Vui lòng điền vào món gọi!",
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
     // Dropdown on mouse hover
     const $dropdown = $(".dropdown");
     const $dropdownToggle = $(".dropdown-toggle");

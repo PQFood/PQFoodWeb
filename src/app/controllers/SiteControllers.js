@@ -45,6 +45,15 @@ class SiteController {
         })
     }
 
+    async bookShip(req, res, next){
+        res.json(req.body)
+    }
+
+    async booktable(req, res, next){
+        res.json(req.body)
+
+    }
+
 }
 
 module.exports = new SiteController();

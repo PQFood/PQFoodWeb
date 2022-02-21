@@ -520,42 +520,42 @@
             <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
                 <h5 class="section-title ff-secondary text-start text-primary fw-normal">Đặt chỗ</h5>
                 <h1 class="text-white mb-4">Đặt bàn online</h1>
-                <form>
+                <form action="/booktable" method="post" id="formBookTable">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="name" placeholder="Họ và tên">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên">
                                 <label for="name">Họ và tên</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="phone" placeholder="Số điện thoại">
-                                <label for="email">Số điện thoại</label>
+                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Số điện thoại">
+                                <label for="phoneNumber">Số điện thoại</label>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-floating date" id="date3" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="datetime"
-                                    placeholder="Thời gian" data-target="#date3" data-toggle="datetimepicker" />
-                                <label for="datetime">Thời gian</label>
+                            <div class="form-floating date" id="time" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" id="timeBook" name="timeBook"
+                                    placeholder="Thời gian" data-target="#time" data-toggle="datetimepicker" />
+                                <label for="timeBook">Thời gian</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <select class="form-select" id="select1">
+                                <select class="form-select" id="selectQuantity" name="selectQuantity">
                                     <option value="1">1 Người</option>
                                     <option value="2">2 Người</option>
                                     <option value="3">3 Người</option>
                                 </select>
-                                <label for="select1">Số người</label>
+                                <label for="selectQuantity">Số người</label>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-floating">
-                                <textarea class="form-control" placeholder="Ghi chú" id="message"
+                                <textarea class="form-control" placeholder="Ghi chú" id="note" name="note"
                                     style="height: 100px"></textarea>
-                                <label for="message">Ghi chú</label>
+                                <label for="note">Ghi chú</label>
                             </div>
                         </div>
                         <div class="col-12">
@@ -569,26 +569,26 @@
             <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
                 <h5 class="section-title ff-secondary text-start text-primary fw-normal">Đặt ship</h5>
                 <h1 class="text-white mb-4">Đặt giao tận nhà</h1>
-                <form>
+                <form action="/bookShip" method="post" id="formShip">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="name" placeholder="Họ và tên">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên">
                                 <label for="name">Họ và tên</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="email" placeholder="Số điện thoại">
-                                <label for="email">Số điện thoại</label>
+                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Số điện thoại">
+                                <label for="phoneNumber">Số điện thoại</label>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="form-floating">
-                                <textarea class="form-control" placeholder="Món gọi" id="message"
+                                <textarea class="form-control" placeholder="Món gọi" id="note" name="note"
                                     style="height: 100px"></textarea>
-                                <label for="message">Món gọi</label>
+                                <label for="note">Món gọi</label>
                             </div>
                         </div>
                         <div class="col-12">

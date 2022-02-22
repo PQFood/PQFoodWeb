@@ -38,11 +38,21 @@ class SiteController {
             });
         foodNew.name = req.body.nameFood
         var resultUpload = await foodNew.save()
-        req.session.message = {
-            type: 'success',
-            intro: 'Thêm thực đơn thành công!',
-            message: ''
+        if(resultUpload){
+            req.session.message = {
+                type: 'success',
+                intro: 'Thêm thực đơn thành công!',
+                message: ''
+            }
         }
+        else{
+            req.session.message = {
+                type: 'warning',
+                intro: 'Thêm thực đơn thất bại',
+                message: ''
+            }
+        }
+        
         res.redirect('/admin')
     }
 

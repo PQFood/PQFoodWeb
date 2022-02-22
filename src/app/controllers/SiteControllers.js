@@ -1,4 +1,8 @@
 const admin = require('../models/admin');
+const bookTable = require('../models/bookTable');
+const bookShip = require('../models/bookShip');
+
+
 const sha256 = require('sha256');
 
 class SiteController {
@@ -32,26 +36,53 @@ class SiteController {
             req.session.message = {
                 type: 'warning',
                 intro: 'Đăng nhập thất bại!',
-                message: 'Vui lòng đăng nhập lại!'
+                message: 'Vui lòng đăng nhập lại!',
+                showForm: "showForm"
             }
             res.redirect('back')
         }
     }
 
-    async test(req, res, next){
-        res.render(
-            'addFood',{
-            layout: 'admin'
-        })
+
+    async bookShip(req, res, next) {
+        const bookShipNew = new bookShip(req.body)
+        var resultUpload = await bookShipNew.save()
+
+        if (resultUpload) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Đặt giao đô ăn thành công!',
+                message: 'Cảm ơn bạn đã đặt đồ ăn bên chúng tôi!'
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Đặt đồ ăn thất bại!',
+                message: 'Vui lòng thực hiện lại!'
+            }
+        }
+        res.redirect('/')
     }
 
-    async bookShip(req, res, next){
-        res.json(req.body)
-    }
-
-    async booktable(req, res, next){
-        res.json(req.body)
-
+    async booktable(req, res, next) {
+        const bookTableNew = new bookTable(req.body)
+        var resultUpload = await bookTableNew.save()
+        if (resultUpload) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Đặt bàn thành công!',
+                message: 'Cảm ơn bạn đã đặt bàn với chúng tôi!'
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Đặt bàn thất bại!',
+                message: 'Vui lòng thực hiện lại!'
+            }
+        }
+        res.redirect('/')
     }
 
 }

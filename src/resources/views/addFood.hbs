@@ -1,32 +1,32 @@
 <div class="col bg-dark d-flex align-items-center" id="cach">
     <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
         <h5 class="section-title ff-secondary text-start text-primary fw-normal">Thêm thức ăn/thức uống</h5>
-        <form action="/admin/submitAddForm" method="post" id="formAddFood">
+        <form action="/admin/submitAddForm" method="post" id="formAddFood" enctype="multipart/form-data">
             <div class="row g-3">
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="nameFood" name="nameFood"
                             placeholder="Tên thức ăn/thức uống">
-                        <label for="name">Tên thức ăn/thức uống</label>
+                        <label for="nameFood">Tên thức ăn/thức uống</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="price" name="price" placeholder="Giá (VNĐ)">
-                        <label for="email">Giá (VNĐ)</label>
+                        <label for="price">Giá (VNĐ)</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input type="file" class="form-control" id="image" name="image" placeholder="Hình ảnh">
-                        <label for="email">Hình ảnh</label>
+                        <label for="image">Hình ảnh</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating">
                         <select class="form-select" id="classify" name="classify">
-                            <option value="food">Thức ăn</option>
-                            <option value="drink">Thức uống</option>
+                            <option value="1">Thức ăn</option>
+                            <option value="2">Thức uống</option>
                         </select>
                         <label for="classify">Loại</label>
                     </div>

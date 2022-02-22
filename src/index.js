@@ -2,8 +2,17 @@ const express = require('express')
 const app = express()
 const path = require('path');
 const morgan = require('morgan');
+const fileupload = require("express-fileupload");
+const cloudinary = require('cloudinary').v2
+//
+app.use(fileupload({useTempFiles : true}));
 
 
+cloudinary.config({ 
+  cloud_name: 'pqshop', 
+  api_key: '235438731113978', 
+  api_secret: 'zOM2Llga6w4fei6pO1ey6AQniMU',
+});
 
 //tra ve log http
 app.use(morgan('combined'))
@@ -55,7 +64,6 @@ app.set('views', path.join(__dirname, 'resources/views'));
 //set public
 app.use(express.static(path.join(__dirname, 'public/')));
 
-console.log(path.join(__dirname, 'public/'))
 // // set view 
 app.set('view options', { layout: 'admin' });
 // app.set('view options', { layout: 'admin' });

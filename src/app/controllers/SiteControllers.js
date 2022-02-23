@@ -1,14 +1,26 @@
 const admin = require('../models/admin');
 const bookTable = require('../models/bookTable');
 const bookShip = require('../models/bookShip');
-
+const { mutipleMongooseToObject } = require('../../util/mongoose')
+const { MongooseToObject } = require('../../util/mongoose')
+const foodMenu = require('../models/foodMenu');
 
 const sha256 = require('sha256');
 
 class SiteController {
 
     async index(req, res, next) {
-        res.render('home')
+        var menuFoods = await foodMenu.find({classify : 1})
+        var menuFoodLimit = await foodMenu.find({classify : 1}).limit(8)
+        var menuDrinks = await foodMenu.find({classify : 2})
+
+
+        res.render('home',{
+            menuFoods: mutipleMongooseToObject(menuFoods),
+            menuFoodLimit: mutipleMongooseToObject(menuFoodLimit),
+            menuDrinks: mutipleMongooseToObject(menuDrinks),
+            
+        })
     }
 
     async test(req, res, next) {
@@ -37,7 +49,7 @@ class SiteController {
                 type: 'warning',
                 intro: 'Đăng nhập thất bại!',
                 message: 'Vui lòng đăng nhập lại!',
-                showForm: "showForm"
+                show: 'show ne'
             }
             res.redirect('back')
         }
@@ -46,8 +58,8 @@ class SiteController {
 
     async bookShip(req, res, next) {
         const bookShipNew = new bookShip(req.body)
+        bookShipNew.state = 1
         var resultUpload = await bookShipNew.save()
-
         if (resultUpload) {
             req.session.message = {
                 type: 'success',
@@ -67,6 +79,7 @@ class SiteController {
 
     async booktable(req, res, next) {
         const bookTableNew = new bookTable(req.body)
+        bookTableNew.state = 1
         var resultUpload = await bookTableNew.save()
         if (resultUpload) {
             req.session.message = {

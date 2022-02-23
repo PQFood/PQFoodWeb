@@ -6,7 +6,8 @@ const bookTable = new Schema({
     phoneNumber: { type: String},
     time: { type: Date},
     quantity: { type: Number},
-    note: { type: String}
+    note: { type: String},
+    state: { type: Number},
   },{
     timestamps: true,
   });

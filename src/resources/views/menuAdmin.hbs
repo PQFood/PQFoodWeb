@@ -1,0 +1,18 @@
+<div class="row g-4">
+    {{#if menuFoods}}
+    {{#each menuFoods}}
+    <div class="col-lg-6">
+        <div class="d-flex align-items-center">
+            <img class="flex-shrink-0 img-fluid rounded" src="{{this.image}}" alt="" style="width: 80px;">
+            <div class="w-100 d-flex flex-column text-start ps-4">
+                <h5 class="d-flex justify-content-between border-bottom pb-2">
+                    <span>{{this.name}}</span>
+                    <span class="number text-primary">{{this.price}}</span>
+                </h5>
+                <small class="fst-italic">{{this.description}}</small>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    {{/if}}
+</div>

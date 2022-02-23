@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const bookShip = new Schema({
     name: { type: String},
     phoneNumber: { type: String},
-    order: { type: String}
+    order: { type: String},
+    state: { type: Number},
   },{
     timestamps: true,
   });

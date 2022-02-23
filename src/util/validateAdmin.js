@@ -5,7 +5,8 @@ module.exports.requireAuth = async function(req,res,next){
         req.session.message = {
             type: 'warning',
             intro: 'Bạn chưa đăng nhập! ',
-            message: 'Hãy đăng nhập lại nào.'
+            message: 'Hãy đăng nhập lại nào.',
+            show: 'show ne'
           }
         res.redirect('/')
     }
@@ -16,7 +17,8 @@ module.exports.requireAuth = async function(req,res,next){
             req.session.message = {
                 type: 'warning',
                 intro: 'Đăng nhập thất bại! ',
-                message: 'Hãy đăng nhập lại nào.'
+                message: 'Hãy đăng nhập lại nào.',
+                show: 'show ne'
               }
             res.redirect('/')
         }

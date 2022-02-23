@@ -1,7 +1,8 @@
 const admin = require('../models/admin');
 const cloudinary = require('cloudinary').v2
 const foodMenu = require('../models/foodMenu');
-
+const { mutipleMongooseToObject } = require('../../util/mongoose')
+const { MongooseToObject } = require('../../util/mongoose')
 
 class SiteController {
 
@@ -38,22 +39,33 @@ class SiteController {
             });
         foodNew.name = req.body.nameFood
         var resultUpload = await foodNew.save()
-        if(resultUpload){
+        if (resultUpload) {
             req.session.message = {
                 type: 'success',
                 intro: 'Thêm thực đơn thành công!',
                 message: ''
             }
         }
-        else{
+        else {
             req.session.message = {
                 type: 'warning',
                 intro: 'Thêm thực đơn thất bại',
                 message: ''
             }
         }
-        
-        res.redirect('/admin')
+
+        res.redirect('back')
+    }
+
+    async menu(req, res, next) {
+        var menuFoods = await foodMenu.find({})
+
+        res.render(
+            'menuAdmin', {
+            layout: 'admin',
+            menuFoods: mutipleMongooseToObject(menuFoods),
+
+        })
     }
 
 }

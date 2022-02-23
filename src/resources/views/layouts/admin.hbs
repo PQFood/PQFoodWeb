@@ -64,6 +64,27 @@
 
 
 
+    <script>
+
+        window.onload = function () {
+
+            changeNumber();
+
+        }
+
+        function changeNumber() {
+            var numberChange = document.getElementsByClassName("number");
+            for (x = 0; x < numberChange.length; x++) {
+                var cost = parseInt(numberChange[x].innerHTML)
+
+                const change = new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                })
+                numberChange[x].innerHTML = change.format(cost)
+            }
+        };
+    </script>
 
 </body>
 

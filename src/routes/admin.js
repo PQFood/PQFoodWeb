@@ -5,6 +5,9 @@ const admincontroller = require('../app/controllers/AdminControllers');
 
 
 // router.get('/:slug', sitecontroller.detailProduct);
+router.get('/deleteFood/:slug', admincontroller.deleteFood);
+router.get('/editFood/:slug', admincontroller.editFood);
+router.post('/submitEditFood/:slug', admincontroller.submitEditFood);
 router.get('/menu', admincontroller.menu);
 router.post('/submitAddForm', admincontroller.submitAddForm);
 router.get('/test', admincontroller.test);

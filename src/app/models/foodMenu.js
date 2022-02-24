@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const slug = require('mongoose-slug-generator');
+const mongooseDelete = require('mongoose-delete');
 
 const foodMenu = new Schema({
     name: { type: String},
@@ -14,6 +15,9 @@ const foodMenu = new Schema({
   });
 
 mongoose.plugin(slug);
-
+foodMenu.plugin(mongooseDelete, { 
+  deletedAt : true,
+  overrideMethods: 'all' 
+});
 
 module.exports = mongoose.model('foodMenu', foodMenu);

@@ -25,6 +25,7 @@
     "express-handlebars": "^5.3.3",
     "express-session": "^1.17.2",
     "mongoose": "^6.2.1",
+    "mongoose-delete": "^0.5.4",
     "mongoose-slug-generator": "^1.0.4",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",

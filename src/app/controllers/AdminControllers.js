@@ -58,15 +58,101 @@ class SiteController {
     }
 
     async menu(req, res, next) {
-        var menuFoods = await foodMenu.find({})
-
+        var menuFoods = await foodMenu.find({classify : 1})
+        var menuDinks = await foodMenu.find({classify: 2})
+        var menuDeleted = await foodMenu.findDeleted({})
         res.render(
             'menuAdmin', {
             layout: 'admin',
             menuFoods: mutipleMongooseToObject(menuFoods),
+            menuDinks: mutipleMongooseToObject(menuDinks),
+            menuDeleted: mutipleMongooseToObject(menuDeleted),
 
         })
     }
+
+    async editFood(req, res, next) {
+        var slug = req.params.slug
+        var food = await foodMenu.findOne({ slug: slug })
+        res.render(
+            'editFood', {
+            layout: 'admin',
+            food: MongooseToObject(food)
+        }
+        )
+        // res.json(food)
+    }
+
+    async submitEditFood(req, res, next) {
+        var slug = req.params.slug
+        var result
+        if (req.files) {
+            var linkImg
+            await cloudinary.uploader.upload(req.files.image.tempFilePath,
+                {
+                    folder: 'pqfood',
+                    use_filename: true
+                },
+                function (error, result) {
+                    linkImg = result.url
+                });
+
+            result = await foodMenu.updateOne({ slug: slug }, {
+                name: req.body.nameFood,
+                price: req.body.price,
+                image: linkImg,
+                classify: req.body.classify,
+                description: req.body.description,
+            })
+        }
+        else {
+            result = await foodMenu.updateOne({ slug: slug }, {
+                name: req.body.nameFood,
+                price: req.body.price,
+                classify: req.body.classify,
+                description: req.body.description,
+            })
+        }
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Cập nhật thực đơn thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Cập nhật thực đơn thất bại',
+                message: ''
+            }
+        }
+    
+        res.redirect("/admin/menu")
+    }
+
+    async deleteFood(req, res, next){
+        var slug = await req.params.slug
+        var result = await foodMenu.delete({ slug: slug })
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Xóa thực đơn thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xóa thực đơn thất bại',
+                message: ''
+            }
+        }
+        res.redirect('back')
+    }
+
+
+
 
 }
 

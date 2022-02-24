@@ -100,6 +100,45 @@
         },
     });
 
+    //check form edit food
+    $("#formEditFood").validate({
+        rules: {
+            nameFood: "required",
+            price: {
+                required: true,
+                digits: true,
+                min:1000,
+                max: 100000000
+            },
+            description: "required",
+        },
+        messages: {
+            nameFood: "Vui lòng nhập vào tên thức ăn/thức uống!",
+            price: {
+                required: "Vui lòng nhập vào giá!",
+                digits: "Vui lòng nhập vào số!",
+                min: "Nhập vào giá lớn hơn 1000!",
+                max: "Nhập vào giá nhỏ hơn 100.000.000đ!"
+            },
+            description: "Vui lòng nhập vào mô tả!",
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
+
     //check form book table
     $("#formBookTable").validate({
         rules: {

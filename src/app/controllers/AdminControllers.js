@@ -12,6 +12,11 @@ class SiteController {
             layout: 'admin'
         })
     }
+    
+    async logout(req, res, next) {
+        res.clearCookie("adminId")
+        res.redirect('/')
+    }
 
     async addFood(req, res, next) {
         res.render(
@@ -150,8 +155,39 @@ class SiteController {
         }
         res.redirect('back')
     }
+    
+    async restoreFood(req, res, next){
+        var slug = await req.params.slug
+        var result = await foodMenu.restore({ slug: slug })
+        res.redirect('/admin/editFood/'+slug)
+    }
 
+    async destroyFood(req, res, next){
+        var slug = await req.params.slug
+        var result = await foodMenu.deleteOne({ slug: slug })
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Xóa thực đơn thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xóa thực đơn thất bại',
+                message: ''
+            }
+        }
+        res.redirect('back')
+    }
 
+    async staff(req, res, next){
+        res.render('staffAdmin',
+        {
+            layout: 'admin',
+        })
+    }
 
 
 }

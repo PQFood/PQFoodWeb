@@ -1,8 +1,12 @@
 const admin = require('../models/admin');
 const cloudinary = require('cloudinary').v2
 const foodMenu = require('../models/foodMenu');
-const { mutipleMongooseToObject } = require('../../util/mongoose')
-const { MongooseToObject } = require('../../util/mongoose')
+const { mutipleMongooseToObject } = require('../../util/mongoose');
+const { MongooseToObject } = require('../../util/mongoose');
+const sha256 = require('sha256');
+const staff = require('../models/staff');
+const infoStaff = require('../models/infoStaff');
+
 
 class SiteController {
 
@@ -16,20 +20,6 @@ class SiteController {
     async logout(req, res, next) {
         res.clearCookie("adminId")
         res.redirect('/')
-    }
-
-    async addFood(req, res, next) {
-        res.render(
-            'addFood', {
-            layout: 'admin'
-        })
-    }
-
-    async test(req, res, next) {
-        res.render(
-            'addFood', {
-            layout: 'admin'
-        })
     }
 
     async submitAddForm(req, res, next) {
@@ -183,10 +173,56 @@ class SiteController {
     }
 
     async staff(req, res, next){
+        var infoStaffFind = await infoStaff.find({})
         res.render('staffAdmin',
         {
             layout: 'admin',
+            infoStaffFind: mutipleMongooseToObject(infoStaffFind),
+
+
         })
+    }
+
+    async checkExists(req,res,next){
+        var data = await staff.findOne({ userName: req.body.userName})
+        if(data != null) res.send(false)
+        else res.send(true)
+    }
+
+    async submitAddStaff(req,res,next){
+        var pass = sha256(req.body.password)
+        const staffNew = new staff(req.body)
+        staffNew.password = pass
+        const infoStaffNew = new infoStaff(req.body)
+
+        // res.json(staffNew + infoStaffNew)
+        //add
+        var resultUploadStaff = await staffNew.save()
+        var resultUploadÌnoStaff = await infoStaffNew.save()
+        if (resultUploadStaff && resultUploadÌnoStaff) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Thêm nhân viên thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Thêm nhân viên thất bại',
+                message: ''
+            }
+        }
+        res.redirect('back')
+    }
+
+    async editStaff(req,res,next){
+        var slug = req.params.slug
+        res.json(slug)
+    }
+    async deleteStaff(req,res,next){
+        var slug = req.params.slug
+        res.json(slug)
     }
 
 

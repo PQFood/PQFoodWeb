@@ -1,43 +1,45 @@
 {{#if infoStaffFind}}
-<div class="col bg-dark d-flex align-items-center" id="cach">
-    <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
-        <h5 class="section-title ff-secondary text-start text-primary fw-normal">Điều chỉnh thông tin thức ăn/thức uống
-        </h5>
-        <form action="/admin/submitAddStaff" method="post" id="formAddStaff">
+
+<div class="col bg-dark d-flex align-items-center" >
+    <div class="p-5 wow fadeInUp" data-wow-delay="0.2s" style="margin: 0px 150px;">
+        <h5 class="section-title ff-secondary text-start text-primary fw-normal">Điều chỉnh thông tin nhân viên</h5>
+        <form action="/admin/submitEditStaff/{{infoStaffFind.userName}}" method="post" id="formEditStaff">
             <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-lg-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên"
+                            value="{{infoStaffFind.name}}">
                         <label for="name">Họ và tên</label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
-                            placeholder="Giá (VNĐ)">
+                            value="{{infoStaffFind.phoneNumber}}" placeholder="Giá (VNĐ)">
                         <label for="phoneNumber">Số điện thoại</label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div style="display: none;" id="idEditStaffSelect">{{infoStaffFind.position}}</div>
+                <div class="col-lg-6">
                     <div class="form-floating">
                         <select class="form-select" id="position" name="position">
-                            <option value="Phục vụ">Phục vụ</option>
-                            <option value="Đầu bếp">Đầu bếp</option>
-                            <option value="Shipper">Shipper</option>
-
+                            <option value="Phục vụ" class="selectPositon">Phục vụ</option>
+                            <option value="Đầu bếp" class="selectPositon">Đầu bếp</option>
+                            <option value="Shipper" class="selectPositon">Shipper</option>
                         </select>
                         <label for="position">Vị trí làm việc</label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="address" name="address"
-                            placeholder="Địa chỉ">
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Địa chỉ"
+                            value="{{infoStaffFind.address}}">
                         <label for="address">Địa chỉ</label>
                     </div>
                 </div>
+                
                 <div class="col-12">
-                    <button class="btn btn-primary w-100 py-3" type="submit">Thêm</button>
+                    <button class="btn btn-primary w-100 py-3" type="submit">Cập nhật</button>
                 </div>
             </div>
         </form>
@@ -45,15 +47,15 @@
 </div>
 
 {{else}}
-<h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không tồn tại thức ăn này!</h3>
+<h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không tồn tại nhân viên này!</h3>
 {{/if}}
 
 <script>
-    var classifyFood = Number(document.getElementById('idEditFoodSelect').innerText);
-    var selectClassify = document.getElementsByClassName("selectClassify");
-    for (x = 0; x < selectClassify.length; x++) {
-        if (selectClassify[x].value == classifyFood) {
-            selectClassify[x].selected = true;
+    var position = document.getElementById('idEditStaffSelect').innerText;
+    var selectPositon = document.getElementsByClassName("selectPositon");
+    for (x = 0; x < selectPositon.length; x++) {
+        if (selectPositon[x].value == position) {
+            selectPositon[x].selected = true;
         }
     } 
 </script>

@@ -3,10 +3,9 @@ const router = express.Router();
 const admincontroller = require('../app/controllers/AdminControllers');
 
 
-
+router.post('/submitEditStaff/:slug', admincontroller.submitEditStaff);
 router.get('/editStaff/:slug', admincontroller.editStaff);
 router.get('/deleteStaff/:slug', admincontroller.deleteStaff);
-
 router.post('/checkExists', admincontroller.checkExists);
 router.post('/submitAddStaff', admincontroller.submitAddStaff);
 router.get('/staff', admincontroller.staff);

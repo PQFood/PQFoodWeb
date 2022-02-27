@@ -147,34 +147,11 @@
     $.validator.addMethod("checkPassword", function (value, element) {
         return /^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{6,15}$/.test(value);
     }, "Mật khẩu từ 6 - 15 kí tự bao gồm chữ và số!")
-    // //add method checkExists
-    // $.validator.addMethod("checkExists", function (value, element) {
-    //     var inputElem = $('#formAddStaff :input[name="userName"]'),
-    //         data = { "userName": inputElem.val() };
-    //     var check = true
 
-    //     $.ajax(
-    //         {
-    //             type: "POST",
-    //             url: "/admin/checkExists",
-    //             dataType: "json",
-    //             data: data,
-    //             success: function (returnData) {
-    //                 if (returnData !== true) {
-    //                     return false;
-    //                 }
-    //                 else {
-    //                     return true;
-    //                 }
-    //             },
-    //             error: function (xhr, textStatus, errorThrown) {
-    //                 alert('ajax loading error... ... ' + url + query);
-    //                 return false;
-    //             }
-    //         });
-    //     // return check;
-
-    // }, 'Tên đăng nhập đã tồn tại, vui lòng chọn tên khác!');
+    //check phone number
+    $.validator.addMethod("checkPhoneNumber", function (value, element) {
+        return /^(0)[1-9][0-9]{8,9}$/.test(value);
+    }, "Số điện thoại không hợp lệ!")
 
     //check form edit food
     $("#formAddStaff").validate({
@@ -182,9 +159,9 @@
             name: "required",
             phoneNumber: {
                 required: true,
-                digits: true,
                 minlength: 10,
                 maxlength: 11,
+                checkPhoneNumber: true
             },
             userName: {
                 required: true,
@@ -226,7 +203,6 @@
                 address: "Vui lòng nhập vào địa chỉ cho nhân viên!",
                 phoneNumber: {
                     required: "Vui lòng nhập vào số điện thoại!",
-                    digits: "Vui lòng nhập vào đúng cú pháp số điện thoại!",
                     minlength: "Số điện thoại quá ngắn!",
                     maxlength: "Số điện thoại quá dài",
                 },
@@ -244,7 +220,45 @@
                 $(element).removeClass('is-invalid').addClass('is-valid');
             },
             submitHandler: function (form) {
-                $(form).submit();
+                form.submit();
+            },
+        });
+
+    //check form edit food
+    $("#formEditStaff").validate({
+        rules: {
+            name: "required",
+            phoneNumber: {
+                required: true,
+                minlength: 10,
+                maxlength: 11,
+                checkPhoneNumber: true
+            },
+                address: "required",
+            },
+            messages: {
+                name: "Vui lòng nhập vào họ và tên nhân viên!",
+                address: "Vui lòng nhập vào địa chỉ cho nhân viên!",
+                phoneNumber: {
+                    required: "Vui lòng nhập vào số điện thoại!",
+                    minlength: "Số điện thoại quá ngắn!",
+                    maxlength: "Số điện thoại quá dài",
+                },
+
+            },
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.addClass("invalid-feedback");
+                error.insertAfter(element);
+            },
+            highlight: function (element) {
+                $(element).removeClass('is-valid').addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid').addClass('is-valid');
+            },
+            submitHandler: function (form) {
+                form.submit();
             },
         });
 
@@ -254,9 +268,9 @@
             name: "required",
             phoneNumber: {
                 required: true,
-                digits: true,
                 minlength: 10,
                 maxlength: 11,
+                checkPhoneNumber: true
             },
             timeBook: "required",
         },
@@ -264,7 +278,6 @@
             name: "Vui lòng nhập vào họ và tên",
             phoneNumber: {
                 required: "Vui lòng nhập vào số điện thoại!",
-                digits: "Vui lòng nhập vào đúng cú pháp số điện thoại!",
                 minlength: "Số điện thoại quá ngắn!",
                 maxlength: "Số điện thoại quá dài",
             },
@@ -293,9 +306,9 @@
             name: "required",
             phoneNumber: {
                 required: true,
-                digits: true,
                 minlength: 10,
                 maxlength: 11,
+                checkPhoneNumber: true
             },
             note: "required",
         },
@@ -303,7 +316,6 @@
             name: "Vui lòng nhập vào họ và tên!",
             phoneNumber: {
                 required: "Vui lòng nhập vào số điện thoại!",
-                digits: "Vui lòng nhập vào đúng cú pháp số điện thoại!",
                 minlength: "Số điện thoại quá ngắn!",
                 maxlength: "Số điện thoại quá dài",
             },

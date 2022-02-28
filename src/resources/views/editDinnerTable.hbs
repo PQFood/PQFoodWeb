@@ -1,0 +1,56 @@
+{{#if tableFind}}
+
+<div class="col bg-dark d-flex align-items-center">
+    <div class="p-5 wow fadeInUp w-100" data-wow-delay="0.2s">
+        <h5 class="section-title ff-secondary text-start text-primary fw-normal">Điều chỉnh thông tin nhân viên</h5>
+        <form action="/admin/submitEditDinnerTable/{{tableFind.slug}}" method="post" id="formEditDinnerTable">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên" value="{{tableFind.name}}">
+                        <label for="name">Tên bàn ăn</label>
+                    </div>
+                </div>
+                <div style="display: none;" id="idEditTableSelect">{{tableFind.quantity}}</div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="quantity" name="quantity">
+                            <option value="1" class="selectQuantity">1</option>
+                            <option value="2" class="selectQuantity">2</option>
+                            <option value="3" class="selectQuantity">3</option>
+                            <option value="4" class="selectQuantity">4</option>
+                        </select>
+                        <label for="quantity">Số lượng người</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Mô tả chi tiết" id="description" name="description"
+                            style="height: 100px">{{tableFind.description}}</textarea>
+                        <label for="description">Mô tả chi tiết</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-primary w-100 py-3" type="submit">Cập nhật</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{else}}
+<h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không tồn tại bàn ăn này!</h3>
+{{/if}}
+
+<script>
+    document.getElementById("linkHome").classList.remove("active");
+    document.getElementById("linkTable").classList.add("active");
+    var quantity = Number(document.getElementById('idEditTableSelect').innerText);
+    var selectQuantity = document.getElementsByClassName("selectQuantity");
+    for (x = 0; x < selectQuantity.length; x++) {
+        if (selectQuantity[x].value == quantity) {
+            selectQuantity[x].selected = true;
+        }
+    } 
+</script>

@@ -153,7 +153,7 @@
         return /^(0)[1-9][0-9]{8,9}$/.test(value);
     }, "Số điện thoại không hợp lệ!")
 
-    //check form edit food
+    //check form edit staff
     $("#formAddStaff").validate({
         rules: {
             name: "required",
@@ -261,6 +261,113 @@
                 form.submit();
             },
         });
+
+    //check form add dinner table
+    $("#formAddDinnerTable").validate({
+        rules: {
+            name: "required",
+            description: "required",
+        },
+        messages: {
+            name: "Vui lòng nhập vào tên bàn ăn!",
+            description: "Vui lòng nhập vào mô tả bàn ăn",
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
+    //check form edit dinner table
+    $("#formEditDinnerTable").validate({
+        rules: {
+            name: "required",
+            description: "required",
+        },
+        messages: {
+            name: "Vui lòng nhập vào tên bàn ăn!",
+            description: "Vui lòng nhập vào mô tả bàn ăn",
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
+
+    //check form change password
+    $("#formChangePassword").validate({
+        rules: {
+            passOld: {
+                required: true,
+                remote: {
+                    url: "/admin/checkEqualPassword",
+                    type: "post",
+                    data: {
+                        passOld: function() {
+                        return $( "#passOld" ).val();
+                      }
+                    }
+                  }
+            },
+            passNew: {
+                required: true,
+                checkPassword: true,
+            },
+            rePassNew: {
+                required: true,
+                equalTo: "#passNew"
+            }
+        },
+        messages: {
+            passOld: {
+                required: "Vui lòng nhập vào mật khẩu cũ!",
+                remote: "Mật khẩu nhập vào không đúng, vui lòng kiểm tra lại!"
+            },
+            passNew: {
+                required: "Vui lòng nhập vào mật khẩu mới!",
+            },
+            rePassNew: {
+                required: "Vui lòng nhập lại mật khẩu mới!",
+                equalTo: "Mật khẩu nhập lại không đúng!"
+            }
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
 
     //check form book table
     $("#formBookTable").validate({

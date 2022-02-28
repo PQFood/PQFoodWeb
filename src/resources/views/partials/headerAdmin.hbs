@@ -10,23 +10,23 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0 pe-4">
                 <a href="/admin" class="nav-item nav-link active" id="linkHome">Trang chủ</a>
-                <a href="/admin/staff" class="nav-item nav-link" id="linkService">Nhân viên</a>
-                <a href="#about" class="nav-item nav-link" id="linkAbout">Bàn ăn</a>
+                <a href="/admin/staff" class="nav-item nav-link" id="linkStaff">Nhân viên</a>
+                <a href="/admin/dinnerTable" class="nav-item nav-link" id="linkTable">Bàn ăn</a>
                 <a href="/admin/menu" class="nav-item nav-link" id="linkMenu">Thực đơn</a>
+                <a href="/admin/warehouse" class="nav-item nav-link" id="linkMenu">Kho</a>
+                <a href="/admin/revenue" class="nav-item nav-link" id="linkMenu">Doanh thu</a>
+                <a href="/admin/encash" class="nav-item nav-link" id="linkMenu">Thu ngân</a>
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Cá nhân</a>
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" id="linkMe">Cá nhân</a>
                     <div class="dropdown-menu m-0">
-                        <a href="#" class="dropdown-item">Đổi mật khẩu</a>
+                        <a href="/admin/changePassword" class="dropdown-item">Đổi mật khẩu</a>
                         <a href="/admin/logout" class="dropdown-item">Đăng xuất</a>
                     </div>
                 </div>
-                <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
-            <a href="#bookTable" class="btn btn-primary py-2 px-4 nav-link">Đặt bàn</a> &nbsp;
-            <a href="#bookTable" class="btn btn-primary py-2 px-4 nav-link">Cá nhân</a>
         </div>
     </nav>
-    
+
     <div class="container-xxl py-5 notificationLoginFail">
         {{#if message}}
         <div style="text-align: center" class="alert alert-{{message.type}}">
@@ -44,7 +44,9 @@
                         món ngon của Việt Nam</h3>
                 </div>
                 <div class="col-lg-6 text-center text-lg-end overflow-hidden">
-                    <img class="img-fluid" src="https://res.cloudinary.com/pqshop/image/upload/v1645343743/pqfood/mambanan_qptp12.png" alt="">
+                    <img class="img-fluid"
+                        src="https://res.cloudinary.com/pqshop/image/upload/v1645343743/pqfood/mambanan_qptp12.png"
+                        alt="">
                 </div>
             </div>
         </div>

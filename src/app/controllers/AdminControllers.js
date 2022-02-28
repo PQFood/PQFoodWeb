@@ -6,14 +6,22 @@ const { MongooseToObject } = require('../../util/mongoose');
 const sha256 = require('sha256');
 const staff = require('../models/staff');
 const infoStaff = require('../models/infoStaff');
+const dinnerTable = require('../models/dinnerTable');
+
 
 
 class SiteController {
 
     async index(req, res, next) {
+        var menuFoods = await foodMenu.find({classify : 1})
+        var menuFoodLimit = await foodMenu.find({classify : 1}).limit(8)
+        var menuDrinks = await foodMenu.find({classify : 2})
         res.render(
             'homeAdmin', {
-            layout: 'admin'
+            layout: 'admin',
+            menuFoods: mutipleMongooseToObject(menuFoods),
+            menuFoodLimit: mutipleMongooseToObject(menuFoodLimit),
+            menuDrinks: mutipleMongooseToObject(menuDrinks),
         })
     }
 
@@ -267,6 +275,113 @@ class SiteController {
             }
         }
         res.redirect('/admin/staff')
+    }
+
+    async dinnerTable(req,res,next){
+        var table = await dinnerTable.find({})
+        res.render('dinnerTable',
+        {
+            layout: 'admin',
+            table: mutipleMongooseToObject(table),
+        })
+    }
+
+    async submitAddDinnerTable(req,res,next){
+        const tableNew = new dinnerTable(req.body)
+        var result = await tableNew.save()
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Thêm bàn ăn thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Thêm bàn ăn thất bại',
+                message: ''
+            }
+        }
+        res.redirect("/admin/dinnerTable")
+    }
+
+    async editDinnerTable(req, res, next) {
+        var slug = req.params.slug
+        var tableFind = await dinnerTable.findOne({ slug: slug })
+        res.render('editDinnerTable',
+            {
+                layout: 'admin',
+                tableFind: MongooseToObject(tableFind),
+            })
+    }
+    async deleteDinnerTable(req, res, next) {
+        var slug = req.params.slug
+        var result = await dinnerTable.deleteOne({ slug: slug })
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Xóa bàn ăn thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xóa bàn ăn thất bại',
+                message: ''
+            }
+        }
+        res.redirect('back')
+    }
+    async submitEditDinnerTable(req, res, next) {
+        var slug = req.params.slug
+        var result = await dinnerTable.updateOne({ slug: slug }, {
+            name: req.body.name,
+            description: req.body.description,
+            quantity: req.body.quantity,
+        })
+        if (result) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Cập nhật thông tin bàn ăn thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Cập nhật thông tin bàn ăn thất bại',
+                message: ''
+            }
+        }
+        res.redirect('/admin/dinnerTable')
+    }
+
+    async changePassword(req, res, next) {
+        res.render('changePassword',
+            {
+                layout: 'admin',
+            })
+    }
+    async checkEqualPassword(req,res,next){
+        var passOld = sha256(req.body.passOld)
+        var data = await admin.findOne({_id: req.signedCookies.adminId, password: passOld})
+        if(data == null) {
+            res.send(false)
+        }
+        else {
+            res.send(true)
+        }
+    }
+
+    async submitChangePassword(req, res, next) {
+        var passNew = sha256(req.body.passNew)
+        var data = await admin.updateOne({_id: req.signedCookies.adminId},{
+            password: passNew
+        })
+        res.clearCookie("adminId")
+        res.redirect('/admin')
     }
 
 

@@ -1,7 +1,7 @@
 <div class="container-xxl py-5">
     <div class="container">
         <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-            <h3 class="section-title ff-secondary text-center text-primary fw-normal">Nhân viên</h3>
+            <h3 class="section-title ff-secondary text-center text-primary fw-normal">Bàn ăn</h3>
         </div>
         <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
             <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
@@ -11,7 +11,7 @@
                         <i class="fas fa-user fa-2x text-primary"></i>
                         <div class="ps-3">
                             <small class="text-body">Danh sách</small>
-                            <h6 class="mt-n1 mb-0">Nhân viên</h6>
+                            <h6 class="mt-n1 mb-0">Bàn ăn</h6>
                         </div>
                     </a>
                 </li>
@@ -21,7 +21,7 @@
                         <i class="fas fa-plus fa-2x text-primary"></i>
                         <div class="ps-3">
                             <small class="text-body">Thêm</small>
-                            <h6 class="mt-n1 mb-0">Nhân viên</h6>
+                            <h6 class="mt-n1 mb-0">Bàn ăn</h6>
                         </div>
                     </a>
                 </li>
@@ -30,8 +30,8 @@
                 <div id="tab-1" class="tab-pane fade show p-0 active">
 
                     <div class="row g-4">
-                        {{#if infoStaffFind}}
-                        {{#each infoStaffFind}}
+                        {{#if table}}
+                        {{#each table}}
                         <div class="col-lg-6">
                             <div class="d-flex align-items-center">
                                
@@ -39,16 +39,15 @@
                                     <h5 class="d-flex justify-content-between border-bottom pb-2">
                                         <span>
                                             {{this.name}}
-                                            <a href="/admin/editStaff/{{this.userName}}"><i
+                                            <a href="/admin/editDinnerTable/{{this.slug}}"><i
                                                     class="fas fa-pen-square"></i></a>
-                                            <a href="#" onclick="btnDelete('{{this.userName}}')"><i
+                                            <a href="#" onclick="btnDelete('{{this.slug}}')"><i
                                                     class="fas fa-trash-alt"></i></a>
                                         </span>
 
-                                        <span class="text-primary">{{this.position}}</span>
+                                        <span class="text-primary">{{this.quantity}}&nbsp;người</span>
                                     </h5>
-                                    <small class="fst-italic">{{this.phoneNumber}}</small>
-                                    <small class="fst-italic">{{this.address}}</small>
+                                    <small class="fst-italic">{{this.description}}</small>
 
                                 </div>
                             </div>
@@ -59,61 +58,34 @@
                 </div>
                 <div id="tab-addStaff" class="tab-pane fade show p-0">
                     <div class="col bg-dark d-flex align-items-center" id="cach">
-                        <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
-                            <h5 class="section-title ff-secondary text-start text-primary fw-normal">Thêm nhân viên</h5>
-                            <form action="/admin/submitAddStaff" method="post" id="formAddStaff">
-                                <div class="row g-3">
+                        <div class="p-5 wow fadeInUp w-100" data-wow-delay="0.2s">
+                            <h3 class="section-title ff-secondary text-start text-primary fw-normal">Thêm bàn ăn</h3>
+                            <form action="/admin/submitAddDinnerTable" method="post" id="formAddDinnerTable">
+                                <div class="row g-4">
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <input type="text" class="form-control" id="name" name="name"
                                                 placeholder="Họ và tên">
-                                            <label for="name">Họ và tên</label>
+                                            <label for="name">Tên bàn ăn</label>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
-                                                placeholder="Giá (VNĐ)">
-                                            <label for="phoneNumber">Số điện thoại</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <select class="form-select" id="position" name="position">
-                                                <option value="Phục vụ">Phục vụ</option>
-                                                <option value="Đầu bếp">Đầu bếp</option>
-                                                <option value="Shipper">Shipper</option>
-
+                                            <select class="form-select" id="quantity" name="quantity">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
                                             </select>
-                                            <label for="position">Vị trí làm việc</label>
+                                            <label for="quantity">Số lượng người</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="userName" name="userName"
-                                                placeholder="Tên đăng nhập">
-                                            <label for="userName">Tên đăng nhập</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="password" class="form-control" id="password" name="password"
-                                                placeholder="Mật khẩu">
-                                            <label for="password">Mật khẩu</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="password" class="form-control" id="rePassword"
-                                                name="rePassword" placeholder="Nhập lại mật khẩu">
-                                            <label for="rePassword">Nhập lại mật khẩu</label>
-                                        </div>
-                                    </div>
+                            
                                     <div class="col-12">
                                         <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Địa chỉ" id="address"
-                                                name="address" style="height: 100px"></textarea>
-                                            <label for="address">Địa chỉ</label>
+                                            <textarea class="form-control" placeholder="Mô tả chi tiết" id="description"
+                                                name="description" style="height: 100px"></textarea>
+                                            <label for="description">Mô tả chi tiết</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -133,10 +105,10 @@
 <script>
 
     document.getElementById("linkHome").classList.remove("active");
-    document.getElementById("linkStaff").classList.add("active");
+    document.getElementById("linkTable").classList.add("active");
     function btnDelete(slug) {
         Swal.fire({
-            title: 'Bạn có chắc muốn xóa nhân viên này?',
+            title: 'Bạn có chắc muốn xóa bàn ăn này?',
             text: "Bạn sẽ không thể khôi phục nếu tiếp tục!",
             icon: 'warning',
             showCancelButton: true,
@@ -146,7 +118,7 @@
             cancelButtonText: 'Quay lại'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.replace("/admin/deleteStaff/" + slug);
+                window.location.replace("/admin/deleteDinnerTable/" + slug);
             }
         })
     }

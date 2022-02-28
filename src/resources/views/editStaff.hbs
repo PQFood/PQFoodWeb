@@ -1,26 +1,26 @@
 {{#if infoStaffFind}}
 
 <div class="col bg-dark d-flex align-items-center" >
-    <div class="p-5 wow fadeInUp" data-wow-delay="0.2s" style="margin: 0px 150px;">
+    <div class="p-5 wow fadeInUp w-100" data-wow-delay="0.2s">
         <h5 class="section-title ff-secondary text-start text-primary fw-normal">Điều chỉnh thông tin nhân viên</h5>
         <form action="/admin/submitEditStaff/{{infoStaffFind.userName}}" method="post" id="formEditStaff">
             <div class="row g-3">
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên"
                             value="{{infoStaffFind.name}}">
                         <label for="name">Họ và tên</label>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
-                            value="{{infoStaffFind.phoneNumber}}" placeholder="Giá (VNĐ)">
+                            value="{{infoStaffFind.phoneNumber}}" placeholder="Số điện thoại">
                         <label for="phoneNumber">Số điện thoại</label>
                     </div>
                 </div>
                 <div style="display: none;" id="idEditStaffSelect">{{infoStaffFind.position}}</div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <select class="form-select" id="position" name="position">
                             <option value="Phục vụ" class="selectPositon">Phục vụ</option>
@@ -30,7 +30,7 @@
                         <label for="position">Vị trí làm việc</label>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="address" name="address" placeholder="Địa chỉ"
                             value="{{infoStaffFind.address}}">
@@ -51,6 +51,8 @@
 {{/if}}
 
 <script>
+    document.getElementById("linkHome").classList.remove("active");
+    document.getElementById("linkStaff").classList.add("active");
     var position = document.getElementById('idEditStaffSelect').innerText;
     var selectPositon = document.getElementsByClassName("selectPositon");
     for (x = 0; x < selectPositon.length; x++) {

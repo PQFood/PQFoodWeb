@@ -3,6 +3,14 @@ const router = express.Router();
 const admincontroller = require('../app/controllers/AdminControllers');
 
 
+router.post('/checkEqualPassword', admincontroller.checkEqualPassword);
+router.post('/submitChangePassword', admincontroller.submitChangePassword);
+router.get('/changePassword', admincontroller.changePassword);
+router.post('/submitEditDinnerTable/:slug', admincontroller.submitEditDinnerTable);
+router.get('/editDinnerTable/:slug', admincontroller.editDinnerTable);
+router.get('/deleteDinnerTable/:slug', admincontroller.deleteDinnerTable);
+router.post('/submitAddDinnerTable', admincontroller.submitAddDinnerTable);
+router.get('/dinnerTable', admincontroller.dinnerTable);
 router.post('/submitEditStaff/:slug', admincontroller.submitEditStaff);
 router.get('/editStaff/:slug', admincontroller.editStaff);
 router.get('/deleteStaff/:slug', admincontroller.deleteStaff);

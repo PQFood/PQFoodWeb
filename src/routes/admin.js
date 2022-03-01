@@ -3,6 +3,21 @@ const router = express.Router();
 const admincontroller = require('../app/controllers/AdminControllers');
 
 
+
+
+
+router.get('/getData', admincontroller.getData);
+
+
+router.get('/revenue', admincontroller.revenue);
+router.get('/encash', admincontroller.encash);
+router.get('/destroyItem/:slug', admincontroller.destroyItem);
+router.get('/restoreItem/:slug', admincontroller.restoreItem);
+router.post('/submitEditItem/:slug', admincontroller.submitEditItem);
+router.get('/editItem/:slug', admincontroller.editItem);
+router.get('/deleteItem/:slug', admincontroller.deleteItem);
+router.post('/submitAddItem', admincontroller.submitAddItem);
+router.get('/warehouse', admincontroller.warehouse);
 router.post('/checkEqualPassword', admincontroller.checkEqualPassword);
 router.post('/submitChangePassword', admincontroller.submitChangePassword);
 router.get('/changePassword', admincontroller.changePassword);

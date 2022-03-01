@@ -170,59 +170,59 @@
                     url: "/admin/checkExists",
                     type: "post",
                     data: {
-                      userName: function() {
-                        return $( "#userName" ).val();
-                      }
+                        userName: function () {
+                            return $("#userName").val();
+                        }
                     }
-                  }
-                },
-                password:
-                {
-                    required: true,
-                    checkPassword: true
-                },
-                rePassword: {
-                    required: true,
-                    equalTo: "#password"
-                },
-                address: "required",
+                }
             },
-            messages: {
-                name: "Vui lòng nhập vào họ và tên nhân viên!",
-                userName: {
-                    required: "Vui lòng nhập vào tên đăng nhập cho nhân viên!",
-                    remote: "Tên đăng nhập đã tồn tại, vui lòng chọn tên khác!"
-                },
-                password: {
-                    required: "Vui lòng nhập vào mật khẩu nhân viên!",
-                },
-                rePassword: {
-                    required: "Vui lòng nhập lại mật khẩu cho nhân viên!",
-                    equalTo: "Mật khẩu nhập lại không đúng!"
-                },
-                address: "Vui lòng nhập vào địa chỉ cho nhân viên!",
-                phoneNumber: {
-                    required: "Vui lòng nhập vào số điện thoại!",
-                    minlength: "Số điện thoại quá ngắn!",
-                    maxlength: "Số điện thoại quá dài",
-                },
+            password:
+            {
+                required: true,
+                checkPassword: true
+            },
+            rePassword: {
+                required: true,
+                equalTo: "#password"
+            },
+            address: "required",
+        },
+        messages: {
+            name: "Vui lòng nhập vào họ và tên nhân viên!",
+            userName: {
+                required: "Vui lòng nhập vào tên đăng nhập cho nhân viên!",
+                remote: "Tên đăng nhập đã tồn tại, vui lòng chọn tên khác!"
+            },
+            password: {
+                required: "Vui lòng nhập vào mật khẩu nhân viên!",
+            },
+            rePassword: {
+                required: "Vui lòng nhập lại mật khẩu cho nhân viên!",
+                equalTo: "Mật khẩu nhập lại không đúng!"
+            },
+            address: "Vui lòng nhập vào địa chỉ cho nhân viên!",
+            phoneNumber: {
+                required: "Vui lòng nhập vào số điện thoại!",
+                minlength: "Số điện thoại quá ngắn!",
+                maxlength: "Số điện thoại quá dài",
+            },
 
-            },
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.addClass("invalid-feedback");
-                error.insertAfter(element);
-            },
-            highlight: function (element) {
-                $(element).removeClass('is-valid').addClass('is-invalid');
-            },
-            unhighlight: function (element) {
-                $(element).removeClass('is-invalid').addClass('is-valid');
-            },
-            submitHandler: function (form) {
-                form.submit();
-            },
-        });
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
 
     //check form edit food
     $("#formEditStaff").validate({
@@ -234,33 +234,33 @@
                 maxlength: 11,
                 checkPhoneNumber: true
             },
-                address: "required",
+            address: "required",
+        },
+        messages: {
+            name: "Vui lòng nhập vào họ và tên nhân viên!",
+            address: "Vui lòng nhập vào địa chỉ cho nhân viên!",
+            phoneNumber: {
+                required: "Vui lòng nhập vào số điện thoại!",
+                minlength: "Số điện thoại quá ngắn!",
+                maxlength: "Số điện thoại quá dài",
             },
-            messages: {
-                name: "Vui lòng nhập vào họ và tên nhân viên!",
-                address: "Vui lòng nhập vào địa chỉ cho nhân viên!",
-                phoneNumber: {
-                    required: "Vui lòng nhập vào số điện thoại!",
-                    minlength: "Số điện thoại quá ngắn!",
-                    maxlength: "Số điện thoại quá dài",
-                },
 
-            },
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.addClass("invalid-feedback");
-                error.insertAfter(element);
-            },
-            highlight: function (element) {
-                $(element).removeClass('is-valid').addClass('is-invalid');
-            },
-            unhighlight: function (element) {
-                $(element).removeClass('is-invalid').addClass('is-valid');
-            },
-            submitHandler: function (form) {
-                form.submit();
-            },
-        });
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
 
     //check form add dinner table
     $("#formAddDinnerTable").validate({
@@ -324,11 +324,11 @@
                     url: "/admin/checkEqualPassword",
                     type: "post",
                     data: {
-                        passOld: function() {
-                        return $( "#passOld" ).val();
-                      }
+                        passOld: function () {
+                            return $("#passOld").val();
+                        }
                     }
-                  }
+                }
             },
             passNew: {
                 required: true,
@@ -407,6 +407,35 @@
         },
     });
 
+    //
+    $('#dayRevenue').datetimepicker({
+        format: 'DD/MM/YYYY'
+    });
+    $('#datetimepicker4').datetimepicker({
+        format: 'DD/MM/YYYY'
+    });
+    $('#revenueDay').validate({
+        rules: {
+            timeRevenue: "required",
+        },
+        messages: {
+            timeRevenue: "Vui lòng chọn thời gian!",
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
     //check form book ship
     $("#formShip").validate({
         rules: {
@@ -427,6 +456,106 @@
                 maxlength: "Số điện thoại quá dài",
             },
             note: "Vui lòng điền vào món gọi!",
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
+    //check form book ship
+    $("#formAddItem").validate({
+        rules: {
+            name: "required",
+            quantity: {
+                required: true,
+                number: true
+            },
+            unit: "required",
+            providerName: "required",
+            providerPhoneNumber: {
+                required: true,
+                minlength: 10,
+                maxlength: 11,
+                checkPhoneNumber: true
+            },
+            providerAddress: "required",
+        },
+        messages: {
+            name: "Vui lòng nhập vào tên sản phẩm!",
+            quantity: {
+                required: "Vui lòng nhập vào số lượng sản phẩm!",
+                number: "Dữ liệu nhập vào không hợp lệ!"
+            },
+            unit: "Vui lòng nhập vào đơn vị tính!",
+            providerName: "Vui lòng nhập vào tên nhà cung cấp!",
+
+            providerPhoneNumber: {
+                required: "Vui lòng nhập vào số điện thoại nhà cung cấp!",
+                minlength: "Số điện thoại quá ngắn!",
+                maxlength: "Số điện thoại quá dài",
+            },
+            providerAddress: "Vui lòng điền vào địa chỉ nhà cung cấp!",
+
+        },
+        errorElement: "div",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).removeClass('is-valid').addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function (form) {
+            form.submit();
+        },
+    });
+    //check form book ship
+    $("#formEditItem").validate({
+        rules: {
+            name: "required",
+            quantity: {
+                required: true,
+                number: true
+            },
+            unit: "required",
+            providerName: "required",
+            providerPhoneNumber: {
+                required: true,
+                minlength: 10,
+                maxlength: 11,
+                checkPhoneNumber: true
+            },
+            providerAddress: "required",
+        },
+        messages: {
+            name: "Vui lòng nhập vào tên sản phẩm!",
+            quantity: {
+                required: "Vui lòng nhập vào số lượng sản phẩm!",
+                number: "Dữ liệu nhập vào không hợp lệ!"
+            },
+            unit: "Vui lòng nhập vào đơn vị tính!",
+            providerName: "Vui lòng nhập vào tên nhà cung cấp!",
+
+            providerPhoneNumber: {
+                required: "Vui lòng nhập vào số điện thoại nhà cung cấp!",
+                minlength: "Số điện thoại quá ngắn!",
+                maxlength: "Số điện thoại quá dài",
+            },
+            providerAddress: "Vui lòng điền vào địa chỉ nhà cung cấp!",
 
         },
         errorElement: "div",

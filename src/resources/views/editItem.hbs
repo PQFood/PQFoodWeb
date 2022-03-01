@@ -1,0 +1,63 @@
+{{#if item}}
+
+<div class="col bg-dark d-flex align-items-center">
+    <div class="p-5 wow fadeInUp w-100" data-wow-delay="0.2s">
+        <h5 class="section-title ff-secondary text-start text-primary fw-normal">Điều chỉnh thông tin sản phẩm</h5>
+        <form action="/admin/submitEditItem/{{item.slug}}" method="post" id="formEditItem">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Tên sản phẩm" value="{{item.name}}">
+                        <label for="name">Tên sản phẩm</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="unit" name="unit" placeholder="Đơn vị tính" value="{{item.unit}}">
+                        <label for="unit">Đơn vị tính</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Số lượng" value="{{item.quantity}}">
+                        <label for="quantity">Số lượng</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="providerName" name="providerName"
+                            placeholder="Tên nhà cung cấp" value="{{item.providerName}}">
+                        <label for="providerName">Tên nhà cung cấp</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="providerPhoneNumber" name="providerPhoneNumber"
+                            placeholder="Số điện thoại nhà cung cấp" value="{{item.providerPhoneNumber}}">
+                        <label for="providerPhoneNumber">Số điện thoại nhà cung cấp</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="providerAddress" name="providerAddress"
+                            placeholder="Địa chỉ nhà cung cấp" value="{{item.providerAddress}}">
+                        <label for="providerAddress">Địa chỉ nhà cung cấp</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-primary w-100 py-3" type="submit">Cập nhật</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{else}}
+<h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không tồn tại sản phẩm này!</h3>
+{{/if}}
+
+<script>
+    document.getElementById("linkHome").classList.remove("active");
+    document.getElementById("linkWarehouse").classList.add("active");
+
+</script>

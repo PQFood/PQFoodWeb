@@ -7,7 +7,7 @@ const bookTable = new Schema({
     time: { type: Date},
     quantity: { type: Number},
     note: { type: String},
-    state: { type: Number},
+    state: { type: String},
   },{
     timestamps: true,
   });

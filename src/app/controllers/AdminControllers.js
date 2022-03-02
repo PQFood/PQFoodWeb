@@ -532,7 +532,8 @@ class SiteController {
                 updatedAt: {
                     $gte: currentDate.toDate(),
                     $lte: moment(currentDate).endOf('month').toDate()
-                }
+                },
+                state: "Đã thanh toán"
             })
             var temp = 0
             for (var j = 0; j < orders.length; j++) {
@@ -551,7 +552,18 @@ class SiteController {
     }
 
     async encash(req, res, next) {
-        res.send('thu ngân')
+        var histories = await orderHistory.find({}).sort({updatedAt: -1}).limit(15)
+        var waitConfirm = await order.find({state : "Chờ xác nhận"}).sort({updatedAt: 1})
+        var waitPayment = await order.find({state : ["Chờ thanh toán","Đang xử lý"]}).sort({updatedAt: 1})
+
+        res.render('encash',
+        {
+            layout: 'admin',
+            histories: mutipleMongooseToObject(histories),
+            waitConfirm: mutipleMongooseToObject(waitConfirm),
+            waitPayment: mutipleMongooseToObject(waitPayment),
+
+        })
     }
 
     async getData(req, res, next) {
@@ -569,7 +581,8 @@ class SiteController {
                 updatedAt: {
                     $gte: currentDate.toDate(),
                     $lte: moment(currentDate).endOf('month').toDate()
-                }
+                },
+                state: "Đã thanh toán"
             })
             var total = 0
             for (var j = 0; j < orders.length; j++) {
@@ -580,7 +593,6 @@ class SiteController {
         }
         res.json(arr)
     }
-
 
 
 }

@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const orderHistory = new Schema({
     dinnerTable: {type: String},
+    dinnerTableName: {type: String},
     orderId: {type: String, unique: true},
     note: { type: String},
     order: {type: Array},

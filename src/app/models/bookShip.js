@@ -5,7 +5,7 @@ const bookShip = new Schema({
     name: { type: String},
     phoneNumber: { type: String},
     order: { type: String},
-    state: { type: Number},
+    state: { type: String},
   },{
     timestamps: true,
   });

@@ -7,7 +7,8 @@ const order = new Schema({
     note: { type: String},
     order: {type: Array},
     total: {type: Number},
-    state: {type: String}
+    state: {type: String},
+    staff: {type: Array},
   },{
     timestamps: true,
   });

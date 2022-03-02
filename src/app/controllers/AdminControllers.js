@@ -19,9 +19,9 @@ const moment = require('moment')
 class SiteController {
 
     async index(req, res, next) {
-        var menuFoods = await foodMenu.find({classify : 1})
-        var menuFoodLimit = await foodMenu.find({classify : 1}).limit(8)
-        var menuDrinks = await foodMenu.find({classify : 2})
+        var menuFoods = await foodMenu.find({ classify: 1 })
+        var menuFoodLimit = await foodMenu.find({ classify: 1 }).limit(8)
+        var menuDrinks = await foodMenu.find({ classify: 2 })
         res.render(
             'homeAdmin', {
             layout: 'admin',
@@ -283,16 +283,16 @@ class SiteController {
         res.redirect('/admin/staff')
     }
 
-    async dinnerTable(req,res,next){
+    async dinnerTable(req, res, next) {
         var table = await dinnerTable.find({})
         res.render('dinnerTable',
-        {
-            layout: 'admin',
-            table: mutipleMongooseToObject(table),
-        })
+            {
+                layout: 'admin',
+                table: mutipleMongooseToObject(table),
+            })
     }
 
-    async submitAddDinnerTable(req,res,next){
+    async submitAddDinnerTable(req, res, next) {
         const tableNew = new dinnerTable(req.body)
         var result = await tableNew.save()
         if (result) {
@@ -370,10 +370,10 @@ class SiteController {
                 layout: 'admin',
             })
     }
-    async checkEqualPassword(req,res,next){
+    async checkEqualPassword(req, res, next) {
         var passOld = sha256(req.body.passOld)
-        var data = await admin.findOne({_id: req.signedCookies.adminId, password: passOld})
-        if(data == null) {
+        var data = await admin.findOne({ _id: req.signedCookies.adminId, password: passOld })
+        if (data == null) {
             res.send(false)
         }
         else {
@@ -383,25 +383,25 @@ class SiteController {
 
     async submitChangePassword(req, res, next) {
         var passNew = sha256(req.body.passNew)
-        var data = await admin.updateOne({_id: req.signedCookies.adminId},{
+        var data = await admin.updateOne({ _id: req.signedCookies.adminId }, {
             password: passNew
         })
         res.clearCookie("adminId")
         res.redirect('/admin')
     }
 
-    async warehouse(req,res,next){
+    async warehouse(req, res, next) {
         var items = await warehouse.find({})
         var itemDeleted = await warehouse.findDeleted({})
         res.render('warehouseAdmin',
-        {
-            layout: 'admin',
-            items: mutipleMongooseToObject(items),
-            itemDeleted: mutipleMongooseToObject(itemDeleted),
-        })
+            {
+                layout: 'admin',
+                items: mutipleMongooseToObject(items),
+                itemDeleted: mutipleMongooseToObject(itemDeleted),
+            })
     }
 
-    async submitAddItem(req,res,next){
+    async submitAddItem(req, res, next) {
         const warehouseNew = new warehouse(req.body);
         var result = await warehouseNew.save()
         if (result) {
@@ -421,17 +421,17 @@ class SiteController {
         res.redirect('back')
     }
 
-    async editItem(req,res,next){
+    async editItem(req, res, next) {
         var slug = req.params.slug
-        var item = await warehouse.findOne({slug:slug})
+        var item = await warehouse.findOne({ slug: slug })
         res.render('editItem',
-        {
-            layout: 'admin',
-            item: MongooseToObject(item)
-        })
+            {
+                layout: 'admin',
+                item: MongooseToObject(item)
+            })
 
     }
-    async submitEditItem(req,res,next){
+    async submitEditItem(req, res, next) {
         var slug = req.params.slug
         var result = await warehouse.updateOne({ slug: slug }, {
             name: req.body.name,
@@ -456,9 +456,9 @@ class SiteController {
             }
         }
         res.redirect('/admin/warehouse')
-        
+
     }
-    async deleteItem(req,res,next){
+    async deleteItem(req, res, next) {
         var slug = req.params.slug
         var result = await warehouse.delete({ slug: slug })
         if (result) {
@@ -478,13 +478,13 @@ class SiteController {
         res.redirect('back')
     }
 
-    async restoreItem(req,res,next){
+    async restoreItem(req, res, next) {
         var slug = req.params.slug
         var result = await warehouse.restore({ slug: slug })
         res.redirect('/admin/editItem/' + slug)
     }
 
-    async destroyItem(req,res,next){
+    async destroyItem(req, res, next) {
         var slug = req.params.slug
         var result = await warehouse.deleteOne({ slug: slug })
         if (result) {
@@ -504,11 +504,12 @@ class SiteController {
         res.redirect('back')
     }
 
-    async revenue(req,res,next){
+    async revenue(req, res, next) {
+        //day
         var timeRevenue = req.query.timeRevenue
         var today
-        if(timeRevenue){
-            today = moment(timeRevenue,'DD-MM-YYYY').startOf('day')
+        if (timeRevenue) {
+            today = moment(timeRevenue, 'DD-MM-YYYY').startOf('day')
         }
         else today = moment().startOf('day')
         var data = await orderHistory.find({
@@ -521,22 +522,46 @@ class SiteController {
         for (var i = 0; i < data.length; i++) {
             total = total + data[i].total
         }
+        //year
+        var date = new Date()
+        var year = date.getFullYear()
+        var arr = []
+        for (var i = 1; i <= 12; i++) {
+            var currentDate = moment(year + '-' + i)
+            var orders = await orderHistory.find({
+                updatedAt: {
+                    $gte: currentDate.toDate(),
+                    $lte: moment(currentDate).endOf('month').toDate()
+                }
+            })
+            var temp = 0
+            for (var j = 0; j < orders.length; j++) {
+                temp = temp + orders[j].total
+            }
+            arr[i - 1] = temp
+        }
 
         res.render('revenueAdmin',
-        {
-            layout: 'admin',
-            total: total,
-        })
+            {
+                layout: 'admin',
+                total: total,
+                arr: arr
+            })
 
     }
 
-    async encash(req,res,next){
+    async encash(req, res, next) {
         res.send('thu ngân')
     }
 
-    async getData(req,res,next){
-        var date = new Date()
-        var year = date.getFullYear()
+    async getData(req, res, next) {
+        var year
+        if(req.query.year){
+            year = req.query.year
+        }
+        else{
+            year = date.getFullYear()
+        }
         var arr = []
         for (var i = 1; i <= 12; i++) {
             var currentDate = moment(year + '-' + i)
@@ -551,8 +576,8 @@ class SiteController {
                 total = total + orders[j].total
             }
             arr[i - 1] = total
+
         }
-        // var arr = [1,2,3,4,5,6,7,8,9,10,11,12]
         res.json(arr)
     }
 

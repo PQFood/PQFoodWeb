@@ -44,7 +44,8 @@
                                     <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
                                         <input type="text" class="form-control datetimepicker-input w-75"
                                             data-target="#datetimepicker4" placeholder="Thời gian" id="timeRevenue"
-                                            name="timeRevenue" style="height: 40px;" />&nbsp;&nbsp;
+                                            name="timeRevenue" style="height: 40px;"
+                                            data-toggle="datetimepicker" />&nbsp;&nbsp;
                                         <div class="input-group-append" data-target="#datetimepicker4"
                                             data-toggle="datetimepicker">
                                             <div class="input-group-text" style="height: 40px;"><i
@@ -66,9 +67,25 @@
                             <span id='totalYear'></span>
                         </h3>
                         <div class="">
-                            <a href="?type=bar"><button class="btn btn-primary">Cột</button></a>&nbsp;
-                            <a href="?type=line"><button class="btn btn-primary">Đường</button></a>&nbsp;
-                            <a href="?type=pie"><button class="btn btn-primary">Tròn</button></a>
+                            <div class="d-flex justify-content-center">
+                                <div class="form-floating w-25">
+                                    <select id="year" class="form-select" name="year"></select>
+                                    <label for="year">Năm</label>
+                                </div>
+                                &nbsp;&nbsp;
+                                <div class="form-floating w-25">
+                                    <select class="form-select" id="type" name="type">
+                                        <option value="bar">Cột</option>
+                                        <option value="line">Đường</option>
+                                        <option value="pie">Tròn</option>
+                                    </select>
+                                    <label for="type">Loại</label>
+                                </div>
+                                &nbsp;&nbsp;
+                                <div class="">
+                                    <button class="btn btn-primary py-3 px-4" onclick="changeYearType()">Xem</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -76,6 +93,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div style="display: none;" id="ArrTotalMonth">
+    {{arr}}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
@@ -104,10 +125,22 @@
 </script>
 
 <script>
+    var start = 2020;
+    var end = new Date().getFullYear() + 50;
+    var options = "";
+    for (var year = start; year <= end; year++) {
+        options += "<option value='" + year + "'>" + year + "</option>";
+    }
+    document.getElementById("year").innerHTML = options;
+</script>
+
+{{!--
+<script>
 
     $.ajax('/admin/getData',
         {
             dataType: 'json',
+            async: 'true',
             type: 'GET',
             success: function (data, status, xhr) {
                 var pathName = window.location.href;
@@ -170,10 +203,10 @@
                             y: {
                                 beginAtZero: true,
                                 ticks: {
-                                callback: function (value, index, values) {
-                                    return change.format(value)
+                                    callback: function (value, index, values) {
+                                        return change.format(value)
+                                    }
                                 }
-                            }
                             }
                         },
                         responsive: true,
@@ -198,7 +231,130 @@
             }
         });
 
+    function destroy() {
+        myChart.destroy();
 
+    }
 
+</script> --}}
+<script>
+    var arr = document.getElementById('ArrTotalMonth').innerText;
+    var data = arr.split(',');
+    var totalYear = 0
+    for (var i = 0; i < data.length; i++) {
+        data[i] = parseInt(data[i]);
+        totalYear += data[i];
+    }
+    const change = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    })
+    document.getElementById('totalYear').innerHTML = change.format(totalYear);
 
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+                'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+            datasets: [{
+                label: 'Doanh thu',
+                data: data,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgb(179, 255, 179)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(153, 0, 153, 0.2)',
+                    'rgba(153, 153, 102, 0.2)',
+                    'rgba(0, 0, 255, 0.2)',
+                    'rgb(0, 255, 0, 0.2)',
+                    'rgba(255, 64, 0, 0.3)',
+                    'rgba(204, 0, 153, 0.3)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(153, 0, 153, 1)',
+                    'rgba(153, 153, 102, 1)',
+                    'rgba(0, 0, 255, 1)',
+                    'rgba(0, 255, 0, 1)',
+                    'rgba(255, 64, 0, 1)',
+                    'rgba(204, 0, 153, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value, index, values) {
+                            return change.format(value)
+                        }
+                    }
+                }
+            },
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Biểu đồ doanh thu qua từng tháng',
+                    font: {
+                        family: 'Times',
+                        size: 20,
+                        style: 'normal',
+                        lineHeight: 1.2
+                    },
+                }
+            },
+        }
+    });
+
+</script>
+
+<script>
+    function changeYearType() {
+        var yearSend = document.getElementById('year').value;
+        var typeSend = document.getElementById('type').value;
+
+        $.ajax('/admin/getData',
+            {
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    year: yearSend,
+                },
+                success: function (data, status, xhr) {
+                    var pathName = window.location.href;
+                    var totalYear = 0
+                    for (var i = 0; i < data.length; i++) {
+                        data[i] = parseInt(data[i]);
+                        totalYear += data[i];
+                    }
+                    const change = new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND',
+                    })
+
+                    document.getElementById('totalYear').innerHTML = change.format(totalYear);
+
+                    myChart.data.datasets[0].type = typeSend
+                    myChart.data.datasets[0].data = data;
+                    myChart.update();
+
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    alert(errorMessage);
+                }
+            });
+    }
 </script>

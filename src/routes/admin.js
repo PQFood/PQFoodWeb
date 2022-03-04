@@ -5,10 +5,10 @@ const admincontroller = require('../app/controllers/AdminControllers');
 
 
 
+router.get('/deleteOrder/:slug', admincontroller.deleteOrder);
 
+router.get('/paymentConfirm/:slug', admincontroller.paymentConfirm);
 router.get('/getData', admincontroller.getData);
-
-
 router.get('/revenue', admincontroller.revenue);
 router.get('/encash', admincontroller.encash);
 router.get('/destroyItem/:slug', admincontroller.destroyItem);

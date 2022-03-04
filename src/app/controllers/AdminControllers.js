@@ -516,7 +516,8 @@ class SiteController {
             updatedAt: {
                 $gte: today.toDate(),
                 $lte: moment(today).endOf('day').toDate()
-            }
+            },
+            state: "Đã thanh toán"
         })
         var total = 0
         for (var i = 0; i < data.length; i++) {
@@ -552,26 +553,26 @@ class SiteController {
     }
 
     async encash(req, res, next) {
-        var histories = await orderHistory.find({}).sort({updatedAt: -1}).limit(15)
-        var waitConfirm = await order.find({state : "Chờ xác nhận"}).sort({updatedAt: 1})
-        var waitPayment = await order.find({state : ["Chờ thanh toán","Đang xử lý"]}).sort({updatedAt: 1})
+        var histories = await orderHistory.find({}).sort({ updatedAt: -1 }).limit(15)
+        var waitConfirm = await order.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
+        var waitPayment = await order.find({ state: ["Chờ thanh toán", "Đang xử lý"] }).sort({ updatedAt: 1 })
 
         res.render('encash',
-        {
-            layout: 'admin',
-            histories: mutipleMongooseToObject(histories),
-            waitConfirm: mutipleMongooseToObject(waitConfirm),
-            waitPayment: mutipleMongooseToObject(waitPayment),
+            {
+                layout: 'admin',
+                histories: mutipleMongooseToObject(histories),
+                waitConfirm: mutipleMongooseToObject(waitConfirm),
+                waitPayment: mutipleMongooseToObject(waitPayment),
 
-        })
+            })
     }
 
     async getData(req, res, next) {
         var year
-        if(req.query.year){
+        if (req.query.year) {
             year = req.query.year
         }
-        else{
+        else {
             year = date.getFullYear()
         }
         var arr = []
@@ -592,6 +593,73 @@ class SiteController {
 
         }
         res.json(arr)
+    }
+
+    async paymentConfirm(req, res, next) {
+        var slug = req.params.slug
+        var orderConfirm = await order.findOne({ orderId: slug })
+
+        var orderHistoryNew = {}
+        orderHistoryNew.dinnerTable = orderConfirm.dinnerTable
+        orderHistoryNew.dinnerTableName = orderConfirm.dinnerTableName
+        orderHistoryNew.orderId = orderConfirm.orderId
+        orderHistoryNew.note = orderConfirm.note
+        orderHistoryNew.order = orderConfirm.order
+        orderHistoryNew.total = orderConfirm.total
+        orderHistoryNew.state = "Đã thanh toán"
+        orderHistoryNew.staff = orderConfirm.staff
+
+        orderHistoryNew = new orderHistory(orderHistoryNew)
+
+        var resultInsert = await orderHistoryNew.save()
+        var resulyDelete = await order.deleteOne({orderId : slug})
+        if (resultInsert && resulyDelete) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Xác nhận thanh toán thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xác nhận thanh toán thất bại',
+                message: ''
+            }
+        }
+        res.redirect('back')
+    }
+
+    async deleteOrder(req,res,next){
+        var slug = req.params.slug
+        var orderFind = await order.findOne({orderId : slug})
+        var orderHistoryNew = {}
+        orderHistoryNew.dinnerTable = orderFind.dinnerTable
+        orderHistoryNew.dinnerTableName = orderFind.dinnerTableName
+        orderHistoryNew.orderId = orderFind.orderId
+        orderHistoryNew.note = orderFind.note
+        orderHistoryNew.order = orderFind.order
+        orderHistoryNew.total = orderFind.total
+        orderHistoryNew.state = "Đã hủy"
+        orderHistoryNew.staff = orderFind.staff
+        orderHistoryNew = new orderHistory(orderHistoryNew)
+        var resultInsert = await orderHistoryNew.save()
+        var resultDelete = await order.deleteOne({orderId : slug})
+        if (resultInsert && resultDelete) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Xóa hóa đơn thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xóa hóa đơn thất bại',
+                message: ''
+            }
+        }
+        res.redirect('back')
     }
 
 

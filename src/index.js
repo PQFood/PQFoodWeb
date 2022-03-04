@@ -52,8 +52,8 @@ app.engine(
   handlebars({
       extname: '.hbs',
       helpers: {
-          sum: function(a,b) {return a+b;},
-          equals: function(a,b) {return a==b;},
+          multiplication: function(a,b) {return a*b;},
+          equals: function(a,b) {return a===b},
       }
   }),
 );

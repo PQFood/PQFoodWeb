@@ -379,7 +379,7 @@
                 maxlength: 11,
                 checkPhoneNumber: true
             },
-            timeBook: "required",
+            time: "required",
         },
         messages: {
             name: "Vui lòng nhập vào họ và tên",
@@ -388,7 +388,7 @@
                 minlength: "Số điện thoại quá ngắn!",
                 maxlength: "Số điện thoại quá dài",
             },
-            timeBook: "Vui lòng chọn thời gian!",
+            time: "Vui lòng chọn thời gian!",
 
         },
         errorElement: "div",
@@ -449,7 +449,7 @@
                 maxlength: 11,
                 checkPhoneNumber: true
             },
-            note: "required",
+            order: "required",
         },
         messages: {
             name: "Vui lòng nhập vào họ và tên!",
@@ -458,7 +458,7 @@
                 minlength: "Số điện thoại quá ngắn!",
                 maxlength: "Số điện thoại quá dài",
             },
-            note: "Vui lòng điền vào món gọi!",
+            order: "Vui lòng điền vào món gọi!",
 
         },
         errorElement: "div",
@@ -476,7 +476,7 @@
             form.submit();
         },
     });
-    //check form book ship
+    //check form add item
     $("#formAddItem").validate({
         rules: {
             name: "required",
@@ -526,7 +526,7 @@
             form.submit();
         },
     });
-    //check form book ship
+    //check form edit item
     $("#formEditItem").validate({
         rules: {
             name: "required",

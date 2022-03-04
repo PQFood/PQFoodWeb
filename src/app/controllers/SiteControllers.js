@@ -58,7 +58,7 @@ class SiteController {
 
     async bookShip(req, res, next) {
         const bookShipNew = new bookShip(req.body)
-        bookShipNew.state = 1
+        bookShipNew.state = "Đang xử lý"
         var resultUpload = await bookShipNew.save()
         if (resultUpload) {
             req.session.message = {
@@ -79,7 +79,7 @@ class SiteController {
 
     async booktable(req, res, next) {
         const bookTableNew = new bookTable(req.body)
-        bookTableNew.state = 1
+        bookTableNew.state = "Đang xử lý"
         var resultUpload = await bookTableNew.save()
         if (resultUpload) {
             req.session.message = {

@@ -260,8 +260,8 @@
 
 <div class="container-xxl py-5 px-0 wow fadeInUp" data-wow-delay="0.1s">
     <div class="row g-0">
-        <div class="col-md-6 bg-dark d-flex align-items-center" id="cach">
-            <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
+        <div class="col-md-12 bg-dark d-flex align-items-center" >
+            <div class="p-5 wow fadeInUp" data-wow-delay="0.2s" style="margin: 0 auto;">
                 <h5 class="section-title ff-secondary text-start text-primary fw-normal">Đặt chỗ</h5>
                 <h1 class="text-white mb-4">Đặt bàn online</h1>
                 <form action="/booktable" method="post" id="formBookTable">
@@ -311,40 +311,7 @@
                 </form>
             </div>
         </div>
-        <div class="col-md-6 bg-dark d-flex align-items-center" id="bookShip">
-            <div class="p-5 wow fadeInUp" data-wow-delay="0.2s">
-                <h5 class="section-title ff-secondary text-start text-primary fw-normal">Đặt ship</h5>
-                <h1 class="text-white mb-4">Đặt giao tận nhà</h1>
-                <form action="/bookShip" method="post" id="formShip">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên">
-                                <label for="name">Họ và tên</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
-                                    placeholder="Số điện thoại">
-                                <label for="phoneNumber">Số điện thoại</label>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="form-floating">
-                                <textarea class="form-control" placeholder="Món gọi" id="order" name="order"
-                                    style="height: 100px"></textarea>
-                                <label for="order">Món gọi + ghi chú</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary w-100 py-3" type="submit">Đặt ngay</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+        
     </div>
 </div>
 

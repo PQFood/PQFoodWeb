@@ -31,7 +31,7 @@ class SiteController {
     async login(req, res, next) {
         var pass = sha256(req.body.passwordLogin)
 
-        var data = await admin.findOne({ username: req.body.userLogin, password: pass })
+        var data = await admin.findOne({ userName: req.body.userLogin, password: pass })
         if (data != null) {
             req.session.message = {
                 type: 'success',
@@ -97,6 +97,24 @@ class SiteController {
         }
         res.redirect('/')
     }
+
+    async bookShipOnline(req,res,next){
+        var menu = await foodMenu.find({})
+        res.render('bookShip',{
+            menu : mutipleMongooseToObject(menu)
+        })
+    }
+
+    async submitBookShip(req,res,next){
+        var temp = await req.body;
+        // res.json(temp.order['ca-loc-kho'])
+        // temp.order.ds.forEach((element) => {
+        //     console.log(temp.order[element].sl)
+        // });
+        res.send(temp)
+    
+    }
+
 
 }
 

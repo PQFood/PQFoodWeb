@@ -449,7 +449,7 @@
                 maxlength: 11,
                 checkPhoneNumber: true
             },
-            order: "required",
+            address: "required",
         },
         messages: {
             name: "Vui lòng nhập vào họ và tên!",
@@ -458,7 +458,7 @@
                 minlength: "Số điện thoại quá ngắn!",
                 maxlength: "Số điện thoại quá dài",
             },
-            order: "Vui lòng điền vào món gọi!",
+            address: "Vui lòng điền vào địa chỉ!",
 
         },
         errorElement: "div",

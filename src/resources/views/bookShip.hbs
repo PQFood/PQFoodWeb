@@ -5,7 +5,7 @@
       <div class="row g-4">
         {{#if menu}}
         {{#each menu}}
-        <div class="col-lg-6" onclick="test('{{this.slug}}')">
+        <div class="col-lg-6">
           <div class="d-flex align-items-center">
             <img class="flex-shrink-0 img-fluid rounded" src="{{this.image}}" alt="" style="width: 80px;">
             <div class="w-100 d-flex flex-column text-start ps-4">
@@ -18,8 +18,13 @@
               <small class="fst-italic">{{this.description}}</small>
               <div class="d-flex justify-content-between">
 
-                <div class="" >
-                  <input type="checkbox" name="order[ds][]" value="{{this.slug}}" id={{this.slug}} />
+                {{!-- <div class="">
+                  <input type="checkbox" name="order[ds][]" value="{{this.slug}}" id={{this.slug}} class="checkboxInput"
+                    onchange="checkInput('{{this.slug}}',{{this.price}})" />
+                </div> --}}
+                <div class="form-check form-switch">
+                  <input class="form-check-input checkboxInput" type="checkbox" name="order[ds][]" value="{{this.slug}}"
+                    id={{this.slug}} onchange="checkInput('{{this.slug}}',{{this.price}})">
                 </div>
 
                 <div class="">
@@ -28,7 +33,8 @@
                       aria-hidden="false">
                       Số lượng </label>
                     <span class="select_cont">
-                      <select class="form-dropdown" name="order[{{this.slug}}][sl]">
+                      <select class="form-dropdown" name="order[{{this.slug}}][sl]"
+                        onchange="selectQuanity('{{this.slug}}',value,{{this.price}})" id="quantity{{this.slug}}">
                         <option value="1"> 1 </option>
                         <option value="2"> 2 </option>
                         <option value="3"> 3 </option>
@@ -48,7 +54,7 @@
                     <span class="form-item-subtotal">
                       Đơn giá:
                     </span>
-                    <span class="number">0</span>
+                    <span class="number" id="dg{{this.slug}}">0</span>
                   </span>
 
                 </div>
@@ -56,7 +62,7 @@
             </div>
           </div>
         </div>
-        
+
         {{/each}}
 
         {{else}}
@@ -66,7 +72,7 @@
       <hr>
       <div class="d-flex justify-content-end pr-4 py-4" style="font-size: 30px; font-weight: bold;">
         <div class="">Tổng: </div>
-        <div class="number">0</div>
+        <div class="number" id="total">0</div>
       </div>
       <hr>
       <div class="row g-3">
@@ -92,23 +98,84 @@
         </div>
         <div class="col-12">
           <div class="form-floating">
-            <textarea class="form-control" placeholder="Ghi chú" id="note" name="note"
-              style="height: 100px"></textarea>
+            <textarea class="form-control" placeholder="Ghi chú" id="note" name="note" style="height: 100px"></textarea>
             <label for="note">Ghi chú</label>
           </div>
         </div>
-        <input type="hidden" name="total" value="10">
+        <input type="hidden" name="total" id="inputTotal" value="0">
         <div class="col-12">
-          <button class="btn btn-primary w-100 py-3" type="submit">Đặt ngay</button>
+          <button class="btn btn-primary w-100 py-3" type="submit" id="submitBookShip">Đặt ngay</button>
         </div>
       </div>
-      
+
     </form>
   </div>
 </div>
 
 <script>
-  function check(slug){
-    alert(slug)
+
+  document.getElementById("linkHome").classList.remove("active");
+
+  document.getElementById("linkService").href = "/#service";
+  document.getElementById("linkAbout").href = "/#about";
+  document.getElementById("linkMenu").href = "/#menu";
+  document.getElementById("linkBookTable").href = "/#bookTable";
+  
+  const change = new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  })
+
+  function disableButton() {
+    var total = parseInt(document.getElementById('inputTotal').value);
+    if (total === 0) {
+      document.getElementById('submitBookShip').disabled = true;
+    }
+    else {
+      document.getElementById('submitBookShip').disabled = false;
+    }
   }
+
+  function totalShow() {
+    var checkboxInput = document.getElementsByClassName("checkboxInput");
+    var total = 0;
+    for (x = 0; x < checkboxInput.length; x++) {
+      if (checkboxInput[x].checked === true) {
+        var slug = 'dg' + checkboxInput[x].value;
+        var dg = document.getElementById(slug).innerText
+        dg = dg.substr(0, dg.length - 2)
+        for (var i = 1; i <= 8; i++) {
+          dg = dg.replace('.', '');
+        }
+        dg = parseInt(dg)
+        total = total + dg;
+      }
+    }
+    document.getElementById('total').innerHTML = change.format(total);
+    document.getElementById('inputTotal').value = total;
+    disableButton();
+  }
+
+  function checkInput(slug, price) {
+    var check = document.getElementById(slug).checked;
+    if (check === true) {
+      var quantity = parseInt(document.getElementById('quantity' + slug).value);
+      document.getElementById('dg' + slug).innerHTML = change.format(quantity * price);
+      totalShow();
+    }
+    else {
+      document.getElementById('dg' + slug).innerHTML = change.format(0);
+      totalShow();
+    }
+
+  }
+
+  function selectQuanity(slug, value, price) {
+    document.getElementById(slug).checked = "true";
+    document.getElementById('dg' + slug).innerHTML = change.format(value * price);
+    totalShow();
+  }
+
+  disableButton();
+
 </script>

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const bookShip = new Schema({
+const shipHistory = new Schema({
     orderId: {type: String, unique: true},
     name: { type: String},
     phoneNumber: { type: String},
@@ -15,4 +15,4 @@ const bookShip = new Schema({
     timestamps: true,
   });
 
-module.exports = mongoose.model('bookShip', bookShip);
+module.exports = mongoose.model('shipHistory', shipHistory);

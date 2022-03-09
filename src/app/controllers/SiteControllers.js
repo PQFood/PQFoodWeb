@@ -4,22 +4,26 @@ const bookShip = require('../models/bookShip');
 const { mutipleMongooseToObject } = require('../../util/mongoose')
 const { MongooseToObject } = require('../../util/mongoose')
 const foodMenu = require('../models/foodMenu');
-
+const ShortUniqueId = require('short-unique-id')
+const uid = new ShortUniqueId({ length: 15 });
 const sha256 = require('sha256');
+const moment = require('moment')
+
+
 
 class SiteController {
 
     async index(req, res, next) {
-        var menuFoods = await foodMenu.find({classify : 1})
-        var menuFoodLimit = await foodMenu.find({classify : 1}).limit(8)
-        var menuDrinks = await foodMenu.find({classify : 2})
+        var menuFoods = await foodMenu.find({ classify: 1 })
+        var menuFoodLimit = await foodMenu.find({ classify: 1 }).limit(8)
+        var menuDrinks = await foodMenu.find({ classify: 2 })
 
 
-        res.render('home',{
+        res.render('home', {
             menuFoods: mutipleMongooseToObject(menuFoods),
             menuFoodLimit: mutipleMongooseToObject(menuFoodLimit),
             menuDrinks: mutipleMongooseToObject(menuDrinks),
-            
+
         })
     }
 
@@ -56,26 +60,6 @@ class SiteController {
     }
 
 
-    async bookShip(req, res, next) {
-        const bookShipNew = new bookShip(req.body)
-        bookShipNew.state = "Đang xử lý"
-        var resultUpload = await bookShipNew.save()
-        if (resultUpload) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Đặt giao đô ăn thành công!',
-                message: 'Cảm ơn bạn đã đặt đồ ăn bên chúng tôi!'
-            }
-        }
-        else {
-            req.session.message = {
-                type: 'warning',
-                intro: 'Đặt đồ ăn thất bại!',
-                message: 'Vui lòng thực hiện lại!'
-            }
-        }
-        res.redirect('/')
-    }
 
     async booktable(req, res, next) {
         const bookTableNew = new bookTable(req.body)
@@ -98,21 +82,83 @@ class SiteController {
         res.redirect('/')
     }
 
-    async bookShipOnline(req,res,next){
+    async bookShip(req, res, next) {
         var menu = await foodMenu.find({})
-        res.render('bookShip',{
-            menu : mutipleMongooseToObject(menu)
+        res.render('bookShip', {
+            menu: mutipleMongooseToObject(menu)
         })
     }
 
-    async submitBookShip(req,res,next){
+    async submitBookShip(req, res, next) {
         var temp = await req.body;
-        // res.json(temp.order['ca-loc-kho'])
-        // temp.order.ds.forEach((element) => {
-        //     console.log(temp.order[element].sl)
-        // });
-        res.send(temp)
-    
+        var bookShipNew = new bookShip();
+        bookShipNew.name = temp.name;
+        bookShipNew.phoneNumber = temp.phoneNumber;
+        bookShipNew.address = temp.address;
+        bookShipNew.note = temp.note;
+        bookShipNew.orderId = uid();
+        bookShipNew.total = temp.total;
+        bookShipNew.state = "Chờ xác nhận";
+
+        for (var i = 0; i < temp.order.ds.length; i++) {
+            var food = await foodMenu.findOne({ slug: temp.order.ds[i] })
+            var orderTemp = {}
+            orderTemp.name = food.name
+            orderTemp.price = food.price
+            orderTemp.classify = food.classify
+            orderTemp.description = food.description
+            orderTemp.image = food.image
+            orderTemp.slug = food.slug
+            orderTemp.quantity = temp.order[temp.order.ds[i]].sl
+            bookShipNew.order[i] = orderTemp;
+        }
+
+        var resultUpload = await bookShipNew.save()
+        if (resultUpload) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Đặt giao đồ ăn thành công!',
+                message: 'Cảm ơn bạn đã đặt đồ ăn bên chúng tôi!'
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Đặt đồ ăn thất bại!',
+                message: 'Vui lòng thực hiện lại!'
+            }
+        }
+        res.redirect('/')
+
+
+    }
+
+    async search(req, res, next) {
+        var timeBook = req.query.timeInput
+        var bookTableFind
+        if (timeBook) {
+            var today = moment(timeBook, 'MM-DD-YYYY').startOf('day')
+            bookTableFind = await bookTable.find({
+                time: {
+                    $gte: today.toDate(),
+                    $lte: moment(today).endOf('day').toDate()
+                }
+            })
+        }
+        else {
+            bookTableFind = await bookTable.find({}).sort({ updatedAt: -1 }).limit(6)
+        }
+
+        var bookShipFind = await bookShip.find({})
+        for (var i = 0; i < bookTableFind.length; i++) {
+            bookTableFind[i]._doc.time = moment(bookTableFind[i].time).format("LT,L")
+        }
+        console.log(bookTableFind)
+        res.render('search', {
+            bookShipFind: mutipleMongooseToObject(bookShipFind),
+            bookTableFind: mutipleMongooseToObject(bookTableFind),
+
+        })
     }
 
 

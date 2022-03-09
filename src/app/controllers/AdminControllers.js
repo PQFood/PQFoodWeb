@@ -10,6 +10,7 @@ const dinnerTable = require('../models/dinnerTable');
 const warehouse = require('../models/warehouse');
 const order = require('../models/order');
 const orderHistory = require('../models/orderHistory');
+const shipHistory = require('../models/shipHistory');
 const moment = require('moment')
 
 
@@ -506,10 +507,10 @@ class SiteController {
 
     async revenue(req, res, next) {
         //day
-        var timeRevenue = req.query.timeRevenue
+        var timeRevenue = req.query.timeInput
         var today
         if (timeRevenue) {
-            today = moment(timeRevenue, 'DD-MM-YYYY').startOf('day')
+            today = moment(timeRevenue, 'MM-DD-YYYY').startOf('day')
         }
         else today = moment().startOf('day')
         var data = await orderHistory.find({
@@ -523,6 +524,19 @@ class SiteController {
         for (var i = 0; i < data.length; i++) {
             total = total + data[i].total
         }
+
+        var dataShip = await shipHistory.find({
+            updatedAt: {
+                $gte: today.toDate(),
+                $lte: moment(today).endOf('day').toDate()
+            },
+            state: "Đã hoàn thành"
+        })
+
+        for (var i = 0; i < dataShip.length; i++) {
+            total = total + dataShip[i].total
+        }
+
         //year
         var date = new Date()
         var year = date.getFullYear()
@@ -540,6 +554,18 @@ class SiteController {
             for (var j = 0; j < orders.length; j++) {
                 temp = temp + orders[j].total
             }
+
+            var ships = await shipHistory.find({
+                updatedAt: {
+                    $gte: currentDate.toDate(),
+                    $lte: moment(currentDate).endOf('month').toDate()
+                },
+                state: "Đã hoàn thành"
+            })
+            for (var j = 0; j < ships.length; j++) {
+                temp = temp + ships[j].total
+            }
+
             arr[i - 1] = temp
         }
 
@@ -589,6 +615,18 @@ class SiteController {
             for (var j = 0; j < orders.length; j++) {
                 total = total + orders[j].total
             }
+
+            var ships = await shipHistory.find({
+                updatedAt: {
+                    $gte: currentDate.toDate(),
+                    $lte: moment(currentDate).endOf('month').toDate()
+                },
+                state: "Đã hoàn thành"
+            })
+            for (var j = 0; j < ships.length; j++) {
+                total = total + ships[j].total
+            }
+
             arr[i - 1] = total
 
         }
@@ -612,7 +650,7 @@ class SiteController {
         orderHistoryNew = new orderHistory(orderHistoryNew)
 
         var resultInsert = await orderHistoryNew.save()
-        var resulyDelete = await order.deleteOne({orderId : slug})
+        var resulyDelete = await order.deleteOne({ orderId: slug })
         if (resultInsert && resulyDelete) {
             req.session.message = {
                 type: 'success',
@@ -630,9 +668,9 @@ class SiteController {
         res.redirect('back')
     }
 
-    async deleteOrder(req,res,next){
+    async deleteOrder(req, res, next) {
         var slug = req.params.slug
-        var orderFind = await order.findOne({orderId : slug})
+        var orderFind = await order.findOne({ orderId: slug })
         var orderHistoryNew = {}
         orderHistoryNew.dinnerTable = orderFind.dinnerTable
         orderHistoryNew.dinnerTableName = orderFind.dinnerTableName
@@ -644,7 +682,7 @@ class SiteController {
         orderHistoryNew.staff = orderFind.staff
         orderHistoryNew = new orderHistory(orderHistoryNew)
         var resultInsert = await orderHistoryNew.save()
-        var resultDelete = await order.deleteOne({orderId : slug})
+        var resultDelete = await order.deleteOne({ orderId: slug })
         if (resultInsert && resultDelete) {
             req.session.message = {
                 type: 'success',

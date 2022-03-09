@@ -415,14 +415,14 @@
         format: 'DD/MM/YYYY'
     });
     $('#datetimepicker4').datetimepicker({
-        format: 'DD/MM/YYYY'
+        format: 'MM/DD/YYYY'
     });
     $('#revenueDay').validate({
         rules: {
-            timeRevenue: "required",
+            timeInput: "required",
         },
         messages: {
-            timeRevenue: "Vui lòng chọn thời gian!",
+            timeInput: "Vui lòng chọn thời gian!",
         },
         errorElement: "div",
         errorPlacement: function (error, element) {

@@ -3,11 +3,11 @@ const router = express.Router();
 const sitecontroller = require('../app/controllers/SiteControllers');
 
 
-router.post('/submitBookShip', sitecontroller.submitBookShip);
-router.get('/bookShipOnline', sitecontroller.bookShipOnline);
+router.get('/search', sitecontroller.search);
 
+router.post('/submitBookShip', sitecontroller.submitBookShip);
 router.post('/booktable', sitecontroller.booktable);
-router.post('/bookShip', sitecontroller.bookShip);
+router.get('/bookShip', sitecontroller.bookShip);
 router.post('/login', sitecontroller.login);
 
 router.get('/', sitecontroller.index);

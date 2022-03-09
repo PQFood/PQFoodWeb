@@ -16,7 +16,17 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="d-flex align-items-center text-start mx-3 pb-3" data-bs-toggle="pill" href="#tab-2">
+                    <a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill"
+                        href="#tab-ship">
+                        <i class="fas fa-money-check-alt fa-2x text-primary"></i>
+                        <div class="ps-3">
+                            <small class="text-body">Xác nhận</small>
+                            <h6 class="mt-n1 mb-0">Thanh toán ship</h6>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="d-flex align-items-center text-start mx-3 pb-3 me-0" data-bs-toggle="pill" href="#tab-2">
                         <i class="fas fa-money-bill fa-2x text-primary"></i>
                         <div class="ps-3">
                             <small class="text-body">Hóa đơn</small>
@@ -30,6 +40,16 @@
                         <div class="ps-3">
                             <small class="text-body">Lịch sử</small>
                             <h6 class="mt-n1 mb-0">Hóa đơn</h6>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill"
+                        href="#tab-shipHistory">
+                        <i class="fas fa-history fa-2x text-primary"></i>
+                        <div class="ps-3">
+                            <small class="text-body">Lịch sử</small>
+                            <h6 class="mt-n1 mb-0">Hóa đơn ship</h6>
                         </div>
                     </a>
                 </li>
@@ -72,11 +92,58 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="/admin/paymentConfirm/{{this.orderId}}"><button class="btn btn-primary w-100 py-3">Xác nhận</button></a>
+                            <a href="/admin/paymentConfirm/{{this.orderId}}"><button
+                                    class="btn btn-primary w-100 py-3">Xác nhận</button></a>
                         </div>
                         {{/each}}
                         {{else}}
                         <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không có hóa đơn nào
+                            chờ xác nhận thanh toán!</h3>
+                        {{/if}}
+                    </div>
+                </div>
+                <div id="tab-ship" class="tab-pane fade show p-0">
+
+                    <div class="row g-4">
+                        {{#if waitPaymentShip}}
+                        {{#each waitPaymentShip}}
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center p-2" style="background-color: lightblue;">
+                                <div class="w-100 d-flex flex-column text-start">
+                                    <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                        <span>
+                                            {{this.name}} - {{this.orderId}}
+                                        </span>
+                                        <span class="number text-primary">{{this.total}}</span>
+                                    </h5>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="">
+                                            {{#each this.order}}
+                                            <div class="">
+                                                <small class="fst-italic">{{this.name}} - SL: {{this.quantity}} - ĐG:
+                                                    <span class="number">{{multiplication this.price
+                                                        this.quantity}}</span></small>
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                        <div class="">
+                                            {{#each this.staff}}
+                                            <div class="">
+                                                <small class="fst-italic" style="display: block;">Nhân viên xử
+                                                    lý:</small>
+                                                <small class="fst-italic">{{this.name}}</small>
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="/admin/paymentConfirmShip/{{this.orderId}}"><button
+                                    class="btn btn-primary w-100 py-3">Xác nhận</button></a>
+                        </div>
+                        {{/each}}
+                        {{else}}
+                        <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không có hóa đơn ship nào
                             chờ xác nhận thanh toán!</h3>
                         {{/if}}
                     </div>
@@ -117,9 +184,11 @@
                                 </div>
                             </div>
                             <div style="background-color: lightblue;">
-                                Trạng thái: <span style="color: coral; font-size: 20px;" class="stateHistory">{{this.state}}</span>
+                                Trạng thái: <span style="color: coral; font-size: 20px;"
+                                    class="stateHistory">{{this.state}}</span>
                             </div>
-                            <button class="btn btn-primary w-100 py-3" onclick="btnDelete('{{this.orderId}}')">Xóa</button>
+                            <button class="btn btn-primary w-100 py-3"
+                                onclick="btnDelete('{{this.orderId}}')">Xóa</button>
 
                         </div>
                         {{/each}}
@@ -177,6 +246,55 @@
                     </div>
                 </div>
 
+                <div id="tab-shipHistory" class="tab-pane fade show p-0">
+                    <div class="row g-4">
+                        {{#if historiesShip}}
+                        {{#each historiesShip}}
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center p-2" style="background-color: lightblue;">
+                                <div class="w-100 d-flex flex-column text-start">
+                                    <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                        <span>
+                                            {{this.name}} - {{this.orderId}}
+                                        </span>
+                                        <span class="number text-primary">{{this.total}}</span>
+                                    </h5>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="">
+                                            {{#each this.order}}
+                                            <div class="">
+                                                <small class="fst-italic">{{this.name}} - SL: {{this.quantity}} - ĐG:
+                                                    <span class="number">{{multiplication this.price
+                                                        this.quantity}}</span></small>
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                        <div class="">
+                                            {{#each this.staff}}
+                                            <div class="">
+                                                <small class="fst-italic" style="display: block;">Nhân viên xử
+                                                    lý:</small>
+                                                <small class="fst-italic">{{this.name}}</small>
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="" style="background-color: lightblue;">
+                                Trạng thái: <span style="color: coral; font-size: 20px;"
+                                    class="stateHistory">{{this.state}}</span>
+                            </div>
+                        </div>
+                        {{/each}}
+                        {{else}}
+                        <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không có hóa đơn ship
+                            nào!</h3>
+                        {{/if}}
+                    </div>
+                </div>
+                
+
             </div>
         </div>
     </div>
@@ -188,8 +306,8 @@
 
     var stateHistory = document.getElementsByClassName('stateHistory')
     for (x = 0; x < stateHistory.length; x++) {
-        if(stateHistory[x].innerText === "Chờ thanh toán" || stateHistory[x].innerText === "Đã thanh toán")
-        stateHistory[x].style.color = "green";
+        if (stateHistory[x].innerText === "Chờ thanh toán" || stateHistory[x].innerText === "Đã thanh toán" || stateHistory[x].innerText === "Đã hoàn thành")
+            stateHistory[x].style.color = "green";
     }
 
     function btnDelete(slug) {

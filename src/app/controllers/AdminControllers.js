@@ -11,6 +11,7 @@ const warehouse = require('../models/warehouse');
 const order = require('../models/order');
 const orderHistory = require('../models/orderHistory');
 const shipHistory = require('../models/shipHistory');
+const bookShip = require('../models/bookShip');
 const moment = require('moment')
 
 
@@ -579,9 +580,11 @@ class SiteController {
     }
 
     async encash(req, res, next) {
-        var histories = await orderHistory.find({}).sort({ updatedAt: -1 }).limit(15)
+        var histories = await orderHistory.find({}).sort({ updatedAt: -1 }).limit(20)
         var waitConfirm = await order.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
         var waitPayment = await order.find({ state: ["Chờ thanh toán", "Đang xử lý"] }).sort({ updatedAt: 1 })
+        var waitPaymentShip = await bookShip.find({ state: "Xác nhận thanh toán" }).sort({ updatedAt: 1 })
+        var historiesShip = await shipHistory.find({}).sort({ updatedAt: -1 }).limit(20)
 
         res.render('encash',
             {
@@ -589,6 +592,9 @@ class SiteController {
                 histories: mutipleMongooseToObject(histories),
                 waitConfirm: mutipleMongooseToObject(waitConfirm),
                 waitPayment: mutipleMongooseToObject(waitPayment),
+                waitPaymentShip: mutipleMongooseToObject(waitPaymentShip),
+                historiesShip: mutipleMongooseToObject(historiesShip),
+
 
             })
     }
@@ -694,6 +700,42 @@ class SiteController {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xóa hóa đơn thất bại',
+                message: ''
+            }
+        }
+        res.redirect('back')
+    }
+
+    async paymentConfirmShip(req,res,next){
+        var slug = req.params.slug;
+
+        var shipConfirm = await bookShip.findOne({ orderId: slug })
+
+        var shipHistoryNew = {}
+        shipHistoryNew.name = shipConfirm.name
+        shipHistoryNew.phoneNumber = shipConfirm.phoneNumber
+        shipHistoryNew.orderId = shipConfirm.orderId
+        shipHistoryNew.address = shipConfirm.address
+        shipHistoryNew.order = shipConfirm.order
+        shipHistoryNew.total = shipConfirm.total
+        shipHistoryNew.state = "Đã hoàn thành"
+        shipHistoryNew.staff = shipConfirm.staff
+        shipHistoryNew.note = shipConfirm.note
+
+        shipHistoryNew = new shipHistory(shipHistoryNew)
+        var resultInsert = await shipHistoryNew.save()
+        var resulyDelete = await bookShip.deleteOne({ orderId: slug })
+        if (resultInsert && resulyDelete) {
+            req.session.message = {
+                type: 'success',
+                intro: 'Xác nhận thanh toán thành công!',
+                message: ''
+            }
+        }
+        else {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xác nhận thanh toán thất bại',
                 message: ''
             }
         }

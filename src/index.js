@@ -79,31 +79,6 @@ const route = require('./routes');
 route(app);
 
 
-
-
 app.listen(process.env.PORT || 8080)
 
-
-
-
-
-
-
-
-// //database
-// const db = require('./config/db')
-// db.connect()
-
-
-
-// //set public
-// app.use(express.static(path.join(__dirname, 'public/')));
-
-
-//
-//xac dinh tuyen duong
-// const route = require('./routes');
-// route(app);
-
-// app.listen(process.env.PORT || 8080);
 

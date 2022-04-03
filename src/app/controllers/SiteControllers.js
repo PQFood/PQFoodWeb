@@ -8,8 +8,8 @@ const ShortUniqueId = require('short-unique-id')
 const uid = new ShortUniqueId({ length: 15 });
 const sha256 = require('sha256');
 const moment = require('moment')
-
-
+const { io } = require("socket.io-client");
+const urlSocketIO = "http://192.168.1.8:5000"
 
 class SiteController {
 
@@ -17,7 +17,6 @@ class SiteController {
         var menuFoods = await foodMenu.find({ classify: 1 })
         var menuFoodLimit = await foodMenu.find({ classify: 1 }).limit(8)
         var menuDrinks = await foodMenu.find({ classify: 2 })
-
 
         res.render('home', {
             menuFoods: mutipleMongooseToObject(menuFoods),
@@ -28,8 +27,8 @@ class SiteController {
     }
 
     async test(req, res, next) {
-        var hienthi = await chuquan.find({})
-        res.json(hienthi)
+    // const socket = io("http://192.168.1.8:5000");
+        res.render("test")
     }
 
     async login(req, res, next) {
@@ -90,6 +89,7 @@ class SiteController {
     }
 
     async submitBookShip(req, res, next) {
+        const socket = io(urlSocketIO);
         var temp = await req.body;
         var bookShipNew = new bookShip();
         bookShipNew.name = temp.name;
@@ -115,6 +115,8 @@ class SiteController {
 
         var resultUpload = await bookShipNew.save()
         if (resultUpload) {
+            socket.emit("sendNotificationBookShip")
+            socket.emit('forceDisconnect');
             req.session.message = {
                 type: 'success',
                 intro: 'Đặt giao đồ ăn thành công!',
@@ -160,7 +162,6 @@ class SiteController {
 
         })
     }
-
 
 }
 

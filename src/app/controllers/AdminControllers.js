@@ -199,7 +199,8 @@ class SiteController {
 
     async checkExists(req, res, next) {
         var data = await staff.findOne({ userName: req.body.userName })
-        if (data != null) res.send(false)
+        var data2 = await admin.findOne({ userName: req.body.userName })
+        if (data != null || data2 != null) res.send(false)
         else res.send(true)
     }
 
@@ -580,11 +581,11 @@ class SiteController {
     }
 
     async encash(req, res, next) {
-        var histories = await orderHistory.find({}).sort({ updatedAt: -1 }).limit(20)
-        var waitConfirm = await order.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
-        var waitPayment = await order.find({ state: ["Chờ thanh toán", "Đang xử lý"] }).sort({ updatedAt: 1 })
-        var waitPaymentShip = await bookShip.find({ state: "Xác nhận thanh toán" }).sort({ updatedAt: 1 })
-        var historiesShip = await shipHistory.find({}).sort({ updatedAt: -1 }).limit(20)
+        var histories = await orderHistory.find({state: ["Đã hủy", "Đã thanh toán"]}).sort({ updatedAt: -1 }).limit(20)
+        var waitConfirm = await orderHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
+        var waitPayment = await order.find({}).sort({ updatedAt: 1 })
+        var waitPaymentShip = await shipHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
+        var historiesShip = await shipHistory.find({state: ["Đã hủy", "Đã hoàn thành"]}).sort({ updatedAt: -1 }).limit(20)
 
         res.render('encash',
             {
@@ -594,8 +595,6 @@ class SiteController {
                 waitPayment: mutipleMongooseToObject(waitPayment),
                 waitPaymentShip: mutipleMongooseToObject(waitPaymentShip),
                 historiesShip: mutipleMongooseToObject(historiesShip),
-
-
             })
     }
 
@@ -641,23 +640,11 @@ class SiteController {
 
     async paymentConfirm(req, res, next) {
         var slug = req.params.slug
-        var orderConfirm = await order.findOne({ orderId: slug })
+        var result = await orderHistory.updateOne({ orderId: slug },{
+            state: "Đã thanh toán"
+        })
 
-        var orderHistoryNew = {}
-        orderHistoryNew.dinnerTable = orderConfirm.dinnerTable
-        orderHistoryNew.dinnerTableName = orderConfirm.dinnerTableName
-        orderHistoryNew.orderId = orderConfirm.orderId
-        orderHistoryNew.note = orderConfirm.note
-        orderHistoryNew.order = orderConfirm.order
-        orderHistoryNew.total = orderConfirm.total
-        orderHistoryNew.state = "Đã thanh toán"
-        orderHistoryNew.staff = orderConfirm.staff
-
-        orderHistoryNew = new orderHistory(orderHistoryNew)
-
-        var resultInsert = await orderHistoryNew.save()
-        var resulyDelete = await order.deleteOne({ orderId: slug })
-        if (resultInsert && resulyDelete) {
+        if (result) {
             req.session.message = {
                 type: 'success',
                 intro: 'Xác nhận thanh toán thành công!',
@@ -709,23 +696,11 @@ class SiteController {
     async paymentConfirmShip(req,res,next){
         var slug = req.params.slug;
 
-        var shipConfirm = await bookShip.findOne({ orderId: slug })
+        var result = await shipHistory.updateOne({ orderId: slug },{
+            state: "Đã hoàn thành"
+        })
 
-        var shipHistoryNew = {}
-        shipHistoryNew.name = shipConfirm.name
-        shipHistoryNew.phoneNumber = shipConfirm.phoneNumber
-        shipHistoryNew.orderId = shipConfirm.orderId
-        shipHistoryNew.address = shipConfirm.address
-        shipHistoryNew.order = shipConfirm.order
-        shipHistoryNew.total = shipConfirm.total
-        shipHistoryNew.state = "Đã hoàn thành"
-        shipHistoryNew.staff = shipConfirm.staff
-        shipHistoryNew.note = shipConfirm.note
-
-        shipHistoryNew = new shipHistory(shipHistoryNew)
-        var resultInsert = await shipHistoryNew.save()
-        var resulyDelete = await bookShip.deleteOne({ orderId: slug })
-        if (resultInsert && resulyDelete) {
+        if (result) {
             req.session.message = {
                 type: 'success',
                 intro: 'Xác nhận thanh toán thành công!',

@@ -13,8 +13,8 @@ const orderHistory = require('../models/orderHistory');
 const shipHistory = require('../models/shipHistory');
 const bookShip = require('../models/bookShip');
 const moment = require('moment')
-
-
+const { io } = require("socket.io-client");
+const urlSocketIO = "http://192.168.1.17:8002"
 
 
 
@@ -581,11 +581,11 @@ class SiteController {
     }
 
     async encash(req, res, next) {
-        var histories = await orderHistory.find({state: ["Đã hủy", "Đã thanh toán"]}).sort({ updatedAt: -1 }).limit(20)
+        var histories = await orderHistory.find({ state: ["Đã hủy", "Đã thanh toán"] }).sort({ updatedAt: -1 }).limit(20)
         var waitConfirm = await orderHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
         var waitPayment = await order.find({}).sort({ updatedAt: 1 })
         var waitPaymentShip = await shipHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
-        var historiesShip = await shipHistory.find({state: ["Đã hủy", "Đã hoàn thành"]}).sort({ updatedAt: -1 }).limit(20)
+        var historiesShip = await shipHistory.find({ state: ["Đã hủy", "Đã hoàn thành"] }).sort({ updatedAt: -1 }).limit(20)
 
         res.render('encash',
             {
@@ -640,7 +640,7 @@ class SiteController {
 
     async paymentConfirm(req, res, next) {
         var slug = req.params.slug
-        var result = await orderHistory.updateOne({ orderId: slug },{
+        var result = await orderHistory.updateOne({ orderId: slug }, {
             state: "Đã thanh toán"
         })
 
@@ -665,6 +665,7 @@ class SiteController {
         var slug = req.params.slug
         var orderFind = await order.findOne({ orderId: slug })
         var orderHistoryNew = {}
+        var socket = io(urlSocketIO);
         orderHistoryNew.dinnerTable = orderFind.dinnerTable
         orderHistoryNew.dinnerTableName = orderFind.dinnerTableName
         orderHistoryNew.orderId = orderFind.orderId
@@ -677,6 +678,12 @@ class SiteController {
         var resultInsert = await orderHistoryNew.save()
         var resultDelete = await order.deleteOne({ orderId: slug })
         if (resultInsert && resultDelete) {
+            socket.emit("sendNotificationWaiterUpdate", {
+                senderName: "Chủ quán",
+                table: orderFind.dinnerTableName,
+                act: 2
+            })
+            socket.emit('forceDisconnect');
             req.session.message = {
                 type: 'success',
                 intro: 'Xóa hóa đơn thành công!',
@@ -693,10 +700,10 @@ class SiteController {
         res.redirect('back')
     }
 
-    async paymentConfirmShip(req,res,next){
+    async paymentConfirmShip(req, res, next) {
         var slug = req.params.slug;
 
-        var result = await shipHistory.updateOne({ orderId: slug },{
+        var result = await shipHistory.updateOne({ orderId: slug }, {
             state: "Đã hoàn thành"
         })
 

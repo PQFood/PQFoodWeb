@@ -9,7 +9,7 @@ const uid = new ShortUniqueId({ length: 15 });
 const sha256 = require('sha256');
 const moment = require('moment')
 const { io } = require("socket.io-client");
-const urlSocketIO = "http://192.168.1.17:8002"
+const urlSocketIO = "http://192.168.1.5:8002"
 
 class SiteController {
 
@@ -61,10 +61,13 @@ class SiteController {
 
 
     async booktable(req, res, next) {
+        const socket = io(urlSocketIO);
         const bookTableNew = new bookTable(req.body)
         bookTableNew.state = "Đang xử lý"
         var resultUpload = await bookTableNew.save()
         if (resultUpload) {
+            socket.emit("sendNotificationBookTable")
+            socket.emit('forceDisconnect');
             req.session.message = {
                 type: 'success',
                 intro: 'Đặt bàn thành công!',

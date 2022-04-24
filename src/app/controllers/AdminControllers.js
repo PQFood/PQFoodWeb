@@ -14,357 +14,525 @@ const shipHistory = require('../models/shipHistory');
 const bookShip = require('../models/bookShip');
 const moment = require('moment')
 const { io } = require("socket.io-client");
-const urlSocketIO = "http://192.168.1.17:8002"
+const urlSocketIO = "http://192.168.1.9:8002"
 
 
 
-class SiteController {
+class AdminController {
 
     async index(req, res, next) {
-        var menuFoods = await foodMenu.find({ classify: 1 })
-        var menuFoodLimit = await foodMenu.find({ classify: 1 }).limit(8)
-        var menuDrinks = await foodMenu.find({ classify: 2 })
-        res.render(
-            'homeAdmin', {
-            layout: 'admin',
-            menuFoods: mutipleMongooseToObject(menuFoods),
-            menuFoodLimit: mutipleMongooseToObject(menuFoodLimit),
-            menuDrinks: mutipleMongooseToObject(menuDrinks),
-        })
+        try {
+            var menuFoods = await foodMenu.find({ classify: 1 })
+            var menuFoodLimit = await foodMenu.find({ classify: 1 }).limit(8)
+            var menuDrinks = await foodMenu.find({ classify: 2 })
+            res.render(
+                'homeAdmin', {
+                layout: 'admin',
+                menuFoods: mutipleMongooseToObject(menuFoods),
+                menuFoodLimit: mutipleMongooseToObject(menuFoodLimit),
+                menuDrinks: mutipleMongooseToObject(menuDrinks),
+            })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async logout(req, res, next) {
-        res.clearCookie("adminId")
-        res.redirect('/')
+        try {
+            res.clearCookie("adminId")
+            res.redirect('/')
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async submitAddForm(req, res, next) {
-        const foodNew = new foodMenu(req.body)
-        await cloudinary.uploader.upload(req.files.image.tempFilePath,
-            {
-                folder: 'pqfood',
-                use_filename: true
-            },
-            function (error, result) {
-                foodNew.image = result.url
-            });
-        foodNew.name = req.body.nameFood
-        var resultUpload = await foodNew.save()
-        if (resultUpload) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Thêm thực đơn thành công!',
-                message: ''
-            }
-        }
-        else {
-            req.session.message = {
-                type: 'warning',
-                intro: 'Thêm thực đơn thất bại',
-                message: ''
-            }
-        }
-
-        res.redirect('back')
-    }
-
-    async menu(req, res, next) {
-        var menuFoods = await foodMenu.find({ classify: 1 })
-        var menuDinks = await foodMenu.find({ classify: 2 })
-        var menuDeleted = await foodMenu.findDeleted({})
-        res.render(
-            'menuAdmin', {
-            layout: 'admin',
-            menuFoods: mutipleMongooseToObject(menuFoods),
-            menuDinks: mutipleMongooseToObject(menuDinks),
-            menuDeleted: mutipleMongooseToObject(menuDeleted),
-
-        })
-    }
-
-    async editFood(req, res, next) {
-        var slug = req.params.slug
-        var food = await foodMenu.findOne({ slug: slug })
-        res.render(
-            'editFood', {
-            layout: 'admin',
-            food: MongooseToObject(food)
-        }
-        )
-        // res.json(food)
-    }
-
-    async submitEditFood(req, res, next) {
-        var slug = req.params.slug
-        var result
-        if (req.files) {
-            var linkImg
+        try {
+            const foodNew = new foodMenu(req.body)
             await cloudinary.uploader.upload(req.files.image.tempFilePath,
                 {
                     folder: 'pqfood',
                     use_filename: true
                 },
                 function (error, result) {
-                    linkImg = result.url
+                    foodNew.image = result.url
                 });
+            foodNew.name = req.body.nameFood
+            var resultUpload = await foodNew.save()
+            if (resultUpload) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Thêm thực đơn thành công!',
+                    message: ''
+                }
+            }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Thêm thực đơn thất bại',
+                    message: ''
+                }
+            }
 
-            result = await foodMenu.updateOne({ slug: slug }, {
-                name: req.body.nameFood,
-                price: req.body.price,
-                image: linkImg,
-                classify: req.body.classify,
-                description: req.body.description,
-            })
+            res.redirect('back')
         }
-        else {
-            result = await foodMenu.updateOne({ slug: slug }, {
-                name: req.body.nameFood,
-                price: req.body.price,
-                classify: req.body.classify,
-                description: req.body.description,
-            })
-        }
-        if (result) {
+        catch (err) {
             req.session.message = {
-                type: 'success',
-                intro: 'Cập nhật thực đơn thành công!',
+                type: 'warning',
+                intro: 'Thêm thực đơn thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        else {
+    }
+
+    async menu(req, res, next) {
+        try {
+            var menuFoods = await foodMenu.find({ classify: 1 })
+            var menuDinks = await foodMenu.find({ classify: 2 })
+            var menuDeleted = await foodMenu.findDeleted({})
+            res.render(
+                'menuAdmin', {
+                layout: 'admin',
+                menuFoods: mutipleMongooseToObject(menuFoods),
+                menuDinks: mutipleMongooseToObject(menuDinks),
+                menuDeleted: mutipleMongooseToObject(menuDeleted),
+
+            })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
+    }
+
+    async editFood(req, res, next) {
+        try {
+            var slug = req.params.slug
+            var food = await foodMenu.findOne({ slug: slug })
+            res.render(
+                'editFood', {
+                layout: 'admin',
+                food: MongooseToObject(food)
+            })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
+    }
+
+    async submitEditFood(req, res, next) {
+        try {
+            var slug = req.params.slug
+            var result
+            if (req.files) {
+                var linkImg
+                await cloudinary.uploader.upload(req.files.image.tempFilePath,
+                    {
+                        folder: 'pqfood',
+                        use_filename: true
+                    },
+                    function (error, result) {
+                        linkImg = result.url
+                    });
+
+                result = await foodMenu.updateOne({ slug: slug }, {
+                    name: req.body.nameFood,
+                    price: req.body.price,
+                    image: linkImg,
+                    classify: req.body.classify,
+                    description: req.body.description,
+                })
+            }
+            else {
+                result = await foodMenu.updateOne({ slug: slug }, {
+                    name: req.body.nameFood,
+                    price: req.body.price,
+                    classify: req.body.classify,
+                    description: req.body.description,
+                })
+            }
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Cập nhật thực đơn thành công!',
+                    message: ''
+                }
+            }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Cập nhật thực đơn thất bại',
+                    message: ''
+                }
+            }
+
+            res.redirect("/admin/menu")
+        }
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Cập nhật thực đơn thất bại',
                 message: ''
             }
+            res.redirect("/admin/menu")
+            console.log(err)
         }
-
-        res.redirect("/admin/menu")
     }
 
     async deleteFood(req, res, next) {
-        var slug = await req.params.slug
-        var result = await foodMenu.delete({ slug: slug })
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Xóa thực đơn thành công!',
-                message: ''
+        try {
+            var slug = await req.params.slug
+            var result = await foodMenu.delete({ slug: slug })
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa thực đơn thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa thực đơn thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xóa thực đơn thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
     async restoreFood(req, res, next) {
-        var slug = await req.params.slug
-        var result = await foodMenu.restore({ slug: slug })
-        res.redirect('/admin/editFood/' + slug)
+        try {
+            var slug = await req.params.slug
+            var result = await foodMenu.restore({ slug: slug })
+            res.redirect('/admin/editFood/' + slug)
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async destroyFood(req, res, next) {
-        var slug = await req.params.slug
-        var result = await foodMenu.deleteOne({ slug: slug })
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Xóa thực đơn thành công!',
-                message: ''
+        try {
+            var slug = await req.params.slug
+            var result = await foodMenu.deleteOne({ slug: slug })
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa thực đơn thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa thực đơn thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xóa thực đơn thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
     async staff(req, res, next) {
-        var infoStaffFind = await infoStaff.find({})
-        res.render('staffAdmin',
-            {
-                layout: 'admin',
-                infoStaffFind: mutipleMongooseToObject(infoStaffFind),
-            })
+        try {
+            var infoStaffFind = await infoStaff.find({})
+            res.render('staffAdmin',
+                {
+                    layout: 'admin',
+                    infoStaffFind: mutipleMongooseToObject(infoStaffFind),
+                })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async checkExists(req, res, next) {
-        var data = await staff.findOne({ userName: req.body.userName })
-        var data2 = await admin.findOne({ userName: req.body.userName })
-        if (data != null || data2 != null) res.send(false)
-        else res.send(true)
+        try {
+            var data = await staff.findOne({ userName: req.body.userName })
+            var data2 = await admin.findOne({ userName: req.body.userName })
+            if (data != null || data2 != null) res.send(false)
+            else res.send(true)
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async submitAddStaff(req, res, next) {
-        var pass = sha256(req.body.password)
-        const staffNew = new staff(req.body)
-        staffNew.password = pass
-        const infoStaffNew = new infoStaff(req.body)
+        try {
+            var pass = sha256(req.body.password)
+            const staffNew = new staff(req.body)
+            staffNew.password = pass
+            const infoStaffNew = new infoStaff(req.body)
 
-        // res.json(staffNew + infoStaffNew)
-        //add
-        var resultUploadStaff = await staffNew.save()
-        var resultUploadÌnoStaff = await infoStaffNew.save()
-        if (resultUploadStaff && resultUploadÌnoStaff) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Thêm nhân viên thành công!',
-                message: ''
+            // res.json(staffNew + infoStaffNew)
+            //add
+            var resultUploadStaff = await staffNew.save()
+            var resultUploadÌnoStaff = await infoStaffNew.save()
+            if (resultUploadStaff && resultUploadÌnoStaff) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Thêm nhân viên thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Thêm nhân viên thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Thêm nhân viên thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
     async editStaff(req, res, next) {
-        var slug = req.params.slug
-        var infoStaffFind = await infoStaff.findOne({ userName: slug })
-        res.render('editStaff',
-            {
-                layout: 'admin',
-                infoStaffFind: MongooseToObject(infoStaffFind),
-            })
+        try {
+            var slug = req.params.slug
+            var infoStaffFind = await infoStaff.findOne({ userName: slug })
+            res.render('editStaff',
+                {
+                    layout: 'admin',
+                    infoStaffFind: MongooseToObject(infoStaffFind),
+                })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
     async deleteStaff(req, res, next) {
-        var slug = req.params.slug
-        var resultStaff = await staff.deleteOne({ userName: slug })
-        var resultInfoStaff = await infoStaff.deleteOne({ userName: slug })
-        if (resultStaff && resultInfoStaff) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Xóa nhân viên thành công!',
-                message: ''
+        try {
+            var slug = req.params.slug
+            var resultStaff = await staff.deleteOne({ userName: slug })
+            var resultInfoStaff = await infoStaff.deleteOne({ userName: slug })
+            if (resultStaff && resultInfoStaff) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa nhân viên thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa nhân viên thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xóa nhân viên thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
     async submitEditStaff(req, res, next) {
-        var slug = req.params.slug
-        var result = await infoStaff.updateOne({ userName: slug }, {
-            name: req.body.name,
-            phoneNumber: req.body.phoneNumber,
-            position: req.body.position,
-            address: req.body.address,
-        })
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Cập nhật thông tin nhân viên thành công!',
-                message: ''
+        try {
+            var slug = req.params.slug
+            var result = await infoStaff.updateOne({ userName: slug }, {
+                name: req.body.name,
+                phoneNumber: req.body.phoneNumber,
+                position: req.body.position,
+                address: req.body.address,
+            })
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Cập nhật thông tin nhân viên thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Cập nhật thông tin nhân viên thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('/admin/staff')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Cập nhật thông tin nhân viên thất bại',
                 message: ''
             }
+            res.redirect('/admin/staff')
+            console.log(err)
         }
-        res.redirect('/admin/staff')
     }
 
     async dinnerTable(req, res, next) {
-        var table = await dinnerTable.find({})
-        res.render('dinnerTable',
-            {
-                layout: 'admin',
-                table: mutipleMongooseToObject(table),
-            })
+        try {
+            var table = await dinnerTable.find({})
+            res.render('dinnerTable',
+                {
+                    layout: 'admin',
+                    table: mutipleMongooseToObject(table),
+                })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async submitAddDinnerTable(req, res, next) {
-        const tableNew = new dinnerTable(req.body)
-        var result = await tableNew.save()
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Thêm bàn ăn thành công!',
-                message: ''
+        try {
+            const tableNew = new dinnerTable(req.body)
+            var result = await tableNew.save()
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Thêm bàn ăn thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Thêm bàn ăn thất bại',
+                    message: ''
+                }
+            }
+            res.redirect("/admin/dinnerTable")
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Thêm bàn ăn thất bại',
                 message: ''
             }
+            res.redirect("/admin/dinnerTable")
+            console.log(err)
         }
-        res.redirect("/admin/dinnerTable")
     }
 
     async editDinnerTable(req, res, next) {
-        var slug = req.params.slug
-        var tableFind = await dinnerTable.findOne({ slug: slug })
-        res.render('editDinnerTable',
-            {
-                layout: 'admin',
-                tableFind: MongooseToObject(tableFind),
-            })
+        try {
+            var slug = req.params.slug
+            var tableFind = await dinnerTable.findOne({ slug: slug })
+            res.render('editDinnerTable',
+                {
+                    layout: 'admin',
+                    tableFind: MongooseToObject(tableFind),
+                })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
     async deleteDinnerTable(req, res, next) {
-        var slug = req.params.slug
-        var result = await dinnerTable.deleteOne({ slug: slug })
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Xóa bàn ăn thành công!',
-                message: ''
+        try {
+            var slug = req.params.slug
+            var result = await dinnerTable.deleteOne({ slug: slug })
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa bàn ăn thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa bàn ăn thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xóa bàn ăn thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
     async submitEditDinnerTable(req, res, next) {
-        var slug = req.params.slug
-        var result = await dinnerTable.updateOne({ slug: slug }, {
-            name: req.body.name,
-            description: req.body.description,
-            quantity: req.body.quantity,
-        })
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Cập nhật thông tin bàn ăn thành công!',
-                message: ''
+        try {
+            var slug = req.params.slug
+            var result = await dinnerTable.updateOne({ slug: slug }, {
+                name: req.body.name,
+                description: req.body.description,
+                quantity: req.body.quantity,
+            })
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Cập nhật thông tin bàn ăn thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Cập nhật thông tin bàn ăn thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('/admin/dinnerTable')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Cập nhật thông tin bàn ăn thất bại',
                 message: ''
             }
+            res.redirect('/admin/dinnerTable')
+            console.log(err)
         }
-        res.redirect('/admin/dinnerTable')
     }
 
     async changePassword(req, res, next) {
@@ -374,357 +542,480 @@ class SiteController {
             })
     }
     async checkEqualPassword(req, res, next) {
-        var passOld = sha256(req.body.passOld)
-        var data = await admin.findOne({ _id: req.signedCookies.adminId, password: passOld })
-        if (data == null) {
-            res.send(false)
+        try {
+            var passOld = sha256(req.body.passOld)
+            var data = await admin.findOne({ _id: req.signedCookies.adminId, password: passOld })
+            if (data == null) {
+                res.send(false)
+            }
+            else {
+                res.send(true)
+            }
         }
-        else {
-            res.send(true)
+        catch (err) {
+            res.json("error")
+            console.log(err)
         }
     }
 
     async submitChangePassword(req, res, next) {
-        var passNew = sha256(req.body.passNew)
-        var data = await admin.updateOne({ _id: req.signedCookies.adminId }, {
-            password: passNew
-        })
-        res.clearCookie("adminId")
-        res.redirect('/admin')
+        try {
+            var passNew = sha256(req.body.passNew)
+            var data = await admin.updateOne({ _id: req.signedCookies.adminId }, {
+                password: passNew
+            })
+            res.clearCookie("adminId")
+            res.redirect('/admin')
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async warehouse(req, res, next) {
-        var items = await warehouse.find({})
-        var itemDeleted = await warehouse.findDeleted({})
-        res.render('warehouseAdmin',
-            {
-                layout: 'admin',
-                items: mutipleMongooseToObject(items),
-                itemDeleted: mutipleMongooseToObject(itemDeleted),
-            })
+        try {
+            var items = await warehouse.find({})
+            var itemDeleted = await warehouse.findDeleted({})
+            res.render('warehouseAdmin',
+                {
+                    layout: 'admin',
+                    items: mutipleMongooseToObject(items),
+                    itemDeleted: mutipleMongooseToObject(itemDeleted),
+                })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async submitAddItem(req, res, next) {
-        const warehouseNew = new warehouse(req.body);
-        var result = await warehouseNew.save()
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Thêm sản phẩm thành công!',
-                message: ''
+        try {
+            const warehouseNew = new warehouse(req.body);
+            var result = await warehouseNew.save()
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Thêm sản phẩm thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Thêm sản phẩm thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Thêm sản phẩm thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
     async editItem(req, res, next) {
-        var slug = req.params.slug
-        var item = await warehouse.findOne({ slug: slug })
-        res.render('editItem',
-            {
-                layout: 'admin',
-                item: MongooseToObject(item)
-            })
+        try {
+            var slug = req.params.slug
+            var item = await warehouse.findOne({ slug: slug })
+            res.render('editItem',
+                {
+                    layout: 'admin',
+                    item: MongooseToObject(item)
+                })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
 
     }
     async submitEditItem(req, res, next) {
-        var slug = req.params.slug
-        var result = await warehouse.updateOne({ slug: slug }, {
-            name: req.body.name,
-            unit: req.body.unit,
-            quantity: req.body.quantity,
-            providerName: req.body.providerName,
-            providerPhoneNumber: req.body.providerPhoneNumber,
-            providerAddress: req.body.providerAddress,
-        })
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Cập nhật sản phẩm thành công!',
-                message: ''
+        try {
+            var slug = req.params.slug
+            var result = await warehouse.updateOne({ slug: slug }, {
+                name: req.body.name,
+                unit: req.body.unit,
+                quantity: req.body.quantity,
+                providerName: req.body.providerName,
+                providerPhoneNumber: req.body.providerPhoneNumber,
+                providerAddress: req.body.providerAddress,
+            })
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Cập nhật sản phẩm thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Cập nhật sản phẩm thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('/admin/warehouse')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Cập nhật sản phẩm thất bại',
                 message: ''
             }
+            res.redirect('/admin/warehouse')
+            console.log(err)
         }
-        res.redirect('/admin/warehouse')
-
     }
     async deleteItem(req, res, next) {
-        var slug = req.params.slug
-        var result = await warehouse.delete({ slug: slug })
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Xóa sản phẩm thành công!',
-                message: ''
+        try {
+            var slug = req.params.slug
+            var result = await warehouse.delete({ slug: slug })
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa sản phẩm thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa sản phẩm thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xóa sản phẩm thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
     async restoreItem(req, res, next) {
-        var slug = req.params.slug
-        var result = await warehouse.restore({ slug: slug })
-        res.redirect('/admin/editItem/' + slug)
+        try {
+            var slug = req.params.slug
+            var result = await warehouse.restore({ slug: slug })
+            res.redirect('/admin/editItem/' + slug)
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async destroyItem(req, res, next) {
-        var slug = req.params.slug
-        var result = await warehouse.deleteOne({ slug: slug })
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Xóa sản phẩm thành công!',
-                message: ''
+        try {
+            var slug = req.params.slug
+            var result = await warehouse.deleteOne({ slug: slug })
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa sản phẩm thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa sản phẩm thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xóa sản phẩm thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
     async revenue(req, res, next) {
-        //day
-        var timeRevenue = req.query.timeInput
-        var today
-        if (timeRevenue) {
-            today = moment(timeRevenue, 'MM-DD-YYYY').startOf('day')
-        }
-        else today = moment().startOf('day')
-        var data = await orderHistory.find({
-            updatedAt: {
-                $gte: today.toDate(),
-                $lte: moment(today).endOf('day').toDate()
-            },
-            state: "Đã thanh toán"
-        })
-        var total = 0
-        for (var i = 0; i < data.length; i++) {
-            total = total + data[i].total
-        }
-
-        var dataShip = await shipHistory.find({
-            updatedAt: {
-                $gte: today.toDate(),
-                $lte: moment(today).endOf('day').toDate()
-            },
-            state: "Đã hoàn thành"
-        })
-
-        for (var i = 0; i < dataShip.length; i++) {
-            total = total + dataShip[i].total
-        }
-
-        //year
-        var date = new Date()
-        var year = date.getFullYear()
-        var arr = []
-        for (var i = 1; i <= 12; i++) {
-            var currentDate = moment(year + '-' + i)
-            var orders = await orderHistory.find({
-                updatedAt: {
-                    $gte: currentDate.toDate(),
-                    $lte: moment(currentDate).endOf('month').toDate()
-                },
-                state: "Đã thanh toán"
-            })
-            var temp = 0
-            for (var j = 0; j < orders.length; j++) {
-                temp = temp + orders[j].total
+        try {
+            //day
+            var timeRevenue = req.query.timeInput
+            var today
+            if (timeRevenue) {
+                today = moment(timeRevenue, 'MM-DD-YYYY').startOf('day')
             }
-
-            var ships = await shipHistory.find({
+            else today = moment().startOf('day')
+            var data = await orderHistory.find({
                 updatedAt: {
-                    $gte: currentDate.toDate(),
-                    $lte: moment(currentDate).endOf('month').toDate()
-                },
-                state: "Đã hoàn thành"
-            })
-            for (var j = 0; j < ships.length; j++) {
-                temp = temp + ships[j].total
-            }
-
-            arr[i - 1] = temp
-        }
-
-        res.render('revenueAdmin',
-            {
-                layout: 'admin',
-                total: total,
-                arr: arr
-            })
-
-    }
-
-    async encash(req, res, next) {
-        var histories = await orderHistory.find({ state: ["Đã hủy", "Đã thanh toán"] }).sort({ updatedAt: -1 }).limit(20)
-        var waitConfirm = await orderHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
-        var waitPayment = await order.find({}).sort({ updatedAt: 1 })
-        var waitPaymentShip = await shipHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
-        var historiesShip = await shipHistory.find({ state: ["Đã hủy", "Đã hoàn thành"] }).sort({ updatedAt: -1 }).limit(20)
-
-        res.render('encash',
-            {
-                layout: 'admin',
-                histories: mutipleMongooseToObject(histories),
-                waitConfirm: mutipleMongooseToObject(waitConfirm),
-                waitPayment: mutipleMongooseToObject(waitPayment),
-                waitPaymentShip: mutipleMongooseToObject(waitPaymentShip),
-                historiesShip: mutipleMongooseToObject(historiesShip),
-            })
-    }
-
-    async getData(req, res, next) {
-        var year
-        if (req.query.year) {
-            year = req.query.year
-        }
-        else {
-            year = date.getFullYear()
-        }
-        var arr = []
-        for (var i = 1; i <= 12; i++) {
-            var currentDate = moment(year + '-' + i)
-            var orders = await orderHistory.find({
-                updatedAt: {
-                    $gte: currentDate.toDate(),
-                    $lte: moment(currentDate).endOf('month').toDate()
+                    $gte: today.toDate(),
+                    $lte: moment(today).endOf('day').toDate()
                 },
                 state: "Đã thanh toán"
             })
             var total = 0
-            for (var j = 0; j < orders.length; j++) {
-                total = total + orders[j].total
+            for (var i = 0; i < data.length; i++) {
+                total = total + data[i].total
             }
 
-            var ships = await shipHistory.find({
+            var dataShip = await shipHistory.find({
                 updatedAt: {
-                    $gte: currentDate.toDate(),
-                    $lte: moment(currentDate).endOf('month').toDate()
+                    $gte: today.toDate(),
+                    $lte: moment(today).endOf('day').toDate()
                 },
                 state: "Đã hoàn thành"
             })
-            for (var j = 0; j < ships.length; j++) {
-                total = total + ships[j].total
+
+            for (var i = 0; i < dataShip.length; i++) {
+                total = total + dataShip[i].total
             }
 
-            arr[i - 1] = total
+            //year
+            var date = new Date()
+            var year = date.getFullYear()
+            var arr = []
+            for (var i = 1; i <= 12; i++) {
+                var currentDate = moment(year + '-' + i)
+                var orders = await orderHistory.find({
+                    updatedAt: {
+                        $gte: currentDate.toDate(),
+                        $lte: moment(currentDate).endOf('month').toDate()
+                    },
+                    state: "Đã thanh toán"
+                })
+                var temp = 0
+                for (var j = 0; j < orders.length; j++) {
+                    temp = temp + orders[j].total
+                }
 
+                var ships = await shipHistory.find({
+                    updatedAt: {
+                        $gte: currentDate.toDate(),
+                        $lte: moment(currentDate).endOf('month').toDate()
+                    },
+                    state: "Đã hoàn thành"
+                })
+                for (var j = 0; j < ships.length; j++) {
+                    temp = temp + ships[j].total
+                }
+
+                arr[i - 1] = temp
+            }
+
+            res.render('revenueAdmin',
+                {
+                    layout: 'admin',
+                    total: total,
+                    arr: arr
+                })
         }
-        res.json(arr)
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
+
+    }
+
+    async encash(req, res, next) {
+        try {
+            var histories = await orderHistory.find({ state: ["Đã hủy", "Đã thanh toán"] }).sort({ updatedAt: -1 }).limit(20)
+            var waitConfirm = await orderHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
+            var waitPayment = await order.find({}).sort({ updatedAt: 1 })
+            var waitPaymentShip = await shipHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
+            var historiesShip = await shipHistory.find({ state: ["Đã hủy", "Đã hoàn thành"] }).sort({ updatedAt: -1 }).limit(20)
+
+            res.render('encash',
+                {
+                    layout: 'admin',
+                    histories: mutipleMongooseToObject(histories),
+                    waitConfirm: mutipleMongooseToObject(waitConfirm),
+                    waitPayment: mutipleMongooseToObject(waitPayment),
+                    waitPaymentShip: mutipleMongooseToObject(waitPaymentShip),
+                    historiesShip: mutipleMongooseToObject(historiesShip),
+                })
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
+    }
+
+    async getData(req, res, next) {
+        try {
+            var year
+            if (req.query.year) {
+                year = req.query.year
+            }
+            else {
+                year = date.getFullYear()
+            }
+            var arr = []
+            for (var i = 1; i <= 12; i++) {
+                var currentDate = moment(year + '-' + i)
+                var orders = await orderHistory.find({
+                    updatedAt: {
+                        $gte: currentDate.toDate(),
+                        $lte: moment(currentDate).endOf('month').toDate()
+                    },
+                    state: "Đã thanh toán"
+                })
+                var total = 0
+                for (var j = 0; j < orders.length; j++) {
+                    total = total + orders[j].total
+                }
+
+                var ships = await shipHistory.find({
+                    updatedAt: {
+                        $gte: currentDate.toDate(),
+                        $lte: moment(currentDate).endOf('month').toDate()
+                    },
+                    state: "Đã hoàn thành"
+                })
+                for (var j = 0; j < ships.length; j++) {
+                    total = total + ships[j].total
+                }
+
+                arr[i - 1] = total
+
+            }
+            res.json(arr)
+        }
+        catch (err) {
+            res.json("error")
+            console.log(err)
+        }
     }
 
     async paymentConfirm(req, res, next) {
-        var slug = req.params.slug
-        var result = await orderHistory.updateOne({ orderId: slug }, {
-            state: "Đã thanh toán"
-        })
+        try {
+            var slug = req.params.slug
+            var result = await orderHistory.updateOne({ orderId: slug }, {
+                state: "Đã thanh toán"
+            })
 
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Xác nhận thanh toán thành công!',
-                message: ''
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xác nhận thanh toán thành công!',
+                    message: ''
+                }
             }
-        }
-        else {
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xác nhận thanh toán thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
+        } catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xác nhận thanh toán thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
     async deleteOrder(req, res, next) {
-        var slug = req.params.slug
-        var orderFind = await order.findOne({ orderId: slug })
-        var orderHistoryNew = {}
-        var socket = io(urlSocketIO);
-        orderHistoryNew.dinnerTable = orderFind.dinnerTable
-        orderHistoryNew.dinnerTableName = orderFind.dinnerTableName
-        orderHistoryNew.orderId = orderFind.orderId
-        orderHistoryNew.note = orderFind.note
-        orderHistoryNew.order = orderFind.order
-        orderHistoryNew.total = orderFind.total
-        orderHistoryNew.state = "Đã hủy"
-        orderHistoryNew.staff = orderFind.staff
-        orderHistoryNew = new orderHistory(orderHistoryNew)
-        var resultInsert = await orderHistoryNew.save()
-        var resultDelete = await order.deleteOne({ orderId: slug })
-        if (resultInsert && resultDelete) {
-            socket.emit("sendNotificationWaiterUpdate", {
-                senderName: "Chủ quán",
-                table: orderFind.dinnerTableName,
-                act: 2
-            })
-            socket.emit('forceDisconnect');
-            req.session.message = {
-                type: 'success',
-                intro: 'Xóa hóa đơn thành công!',
-                message: ''
+        try {
+            var slug = req.params.slug
+            var orderFind = await order.findOne({ orderId: slug })
+            var orderHistoryNew = {}
+            var socket = io(urlSocketIO);
+            orderHistoryNew.dinnerTable = orderFind.dinnerTable
+            orderHistoryNew.dinnerTableName = orderFind.dinnerTableName
+            orderHistoryNew.orderId = orderFind.orderId
+            orderHistoryNew.note = orderFind.note
+            orderHistoryNew.order = orderFind.order
+            orderHistoryNew.total = orderFind.total
+            orderHistoryNew.state = "Đã hủy"
+            orderHistoryNew.staff = orderFind.staff
+            orderHistoryNew = new orderHistory(orderHistoryNew)
+            var resultInsert = await orderHistoryNew.save()
+            var resultDelete = await order.deleteOne({ orderId: slug })
+            if (resultInsert && resultDelete) {
+                socket.emit("sendNotificationWaiterUpdate", {
+                    senderName: "Chủ quán",
+                    table: orderFind.dinnerTableName,
+                    act: 2
+                })
+                socket.emit('forceDisconnect');
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa hóa đơn thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa hóa đơn thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xóa hóa đơn thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
     async paymentConfirmShip(req, res, next) {
-        var slug = req.params.slug;
+        try {
+            var slug = req.params.slug;
 
-        var result = await shipHistory.updateOne({ orderId: slug }, {
-            state: "Đã hoàn thành"
-        })
+            var result = await shipHistory.updateOne({ orderId: slug }, {
+                state: "Đã hoàn thành"
+            })
 
-        if (result) {
-            req.session.message = {
-                type: 'success',
-                intro: 'Xác nhận thanh toán thành công!',
-                message: ''
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xác nhận thanh toán thành công!',
+                    message: ''
+                }
             }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xác nhận thanh toán thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
         }
-        else {
+        catch (err) {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xác nhận thanh toán thất bại',
                 message: ''
             }
+            res.redirect('back')
+            console.log(err)
         }
-        res.redirect('back')
     }
 
 
 }
 
-module.exports = new SiteController();
+module.exports = new AdminController();

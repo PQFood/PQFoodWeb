@@ -72,7 +72,8 @@
                         </div>
                         {{/each}}
                         {{else}}
-                        <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không ai đặt lịch vào ngày này!</h3> <a href="/#bookTable" style="font-size: 30px;">Đặt lịch ngay!</a>
+                        <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không ai đặt lịch
+                            vào ngày này!</h3> <a href="/#bookTable" style="font-size: 30px;">Đặt lịch ngay!</a>
                         {{/if}}
                     </div>
                 </div>
@@ -90,13 +91,16 @@
                                         </span>
                                         <span class="text-primary number">{{this.total}}</span>
                                     </h5>
+                                    <div class="d-flex justify-content-between">
                                     {{#each this.order}}
-                                    <div class="">
+                                    
                                         <small class="fst-italic">{{this.name}} - SL: {{this.quantity}} - ĐG:
                                             <span class="number">{{multiplication this.price
-                                                this.quantity}}</span></small>
-                                    </div>
+                                                this.quantity}}</span>
+                                        </small>
                                     {{/each}}
+                                    <small><span style="color: #ff9933;">{{this.state}}</span></small>
+                                    </div>
 
                                 </div>
                             </div>

@@ -5,7 +5,6 @@ const admincontroller = require('../app/controllers/AdminControllers');
 
 
 router.get('/paymentConfirmShip/:slug', admincontroller.paymentConfirmShip);
-
 router.get('/deleteOrder/:slug', admincontroller.deleteOrder);
 router.get('/paymentConfirm/:slug', admincontroller.paymentConfirm);
 router.get('/getData', admincontroller.getData);

@@ -943,6 +943,7 @@ class AdminController {
             orderHistoryNew.order = orderFind.order
             orderHistoryNew.total = orderFind.total
             orderHistoryNew.state = "Đã hủy"
+            orderHistoryNew.reason = "Chủ quán hủy"
             orderHistoryNew.staff = orderFind.staff
             orderHistoryNew = new orderHistory(orderHistoryNew)
             var resultInsert = await orderHistoryNew.save()

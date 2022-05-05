@@ -9,7 +9,7 @@ const uid = new ShortUniqueId({ length: 15 });
 const sha256 = require('sha256');
 const moment = require('moment')
 const { io } = require("socket.io-client");
-const urlSocketIO = "http://192.168.1.9:8002"
+const urlSocketIO = "http://192.168.0.107:8002"
 
 class SiteController {
 
@@ -190,7 +190,7 @@ class SiteController {
             var timeBook = req.query.timeInput
             var bookTableFind
             if (timeBook) {
-                var today = moment(timeBook, 'MM-DD-YYYY').startOf('day')
+                var today = moment(timeBook, 'DD-MM-YYYY').startOf('day')
                 bookTableFind = await bookTable.find({
                     time: {
                         $gte: today.toDate(),
@@ -204,9 +204,8 @@ class SiteController {
 
             var bookShipFind = await bookShip.find({})
             for (var i = 0; i < bookTableFind.length; i++) {
-                bookTableFind[i]._doc.time = moment(bookTableFind[i].time).format("LT,L")
+                bookTableFind[i]._doc.time = moment(bookTableFind[i].time).format("LT,DD/MM/YYYY")
             }
-            console.log(bookTableFind)
             res.render('search', {
                 bookShipFind: mutipleMongooseToObject(bookShipFind),
                 bookTableFind: mutipleMongooseToObject(bookTableFind),

@@ -415,8 +415,12 @@
         format: 'DD/MM/YYYY'
     });
     $('#datetimepicker4').datetimepicker({
-        format: 'MM/DD/YYYY'
+        format: 'DD/MM/YYYY'
     });
+    $('#datetimepickerWeek').datetimepicker({
+        format: 'DD/MM/YYYY'
+    });
+   
     $('#revenueDay').validate({
         rules: {
             timeInput: "required",
@@ -439,6 +443,7 @@
             form.submit();
         },
     });
+    
     //check form book ship
     $("#formShip").validate({
         rules: {

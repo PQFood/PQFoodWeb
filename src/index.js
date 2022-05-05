@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const path = require('path');
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const fileupload = require("express-fileupload");
 const cloudinary = require('cloudinary').v2
 //
@@ -14,8 +14,8 @@ cloudinary.config({
   api_secret: 'zOM2Llga6w4fei6pO1ey6AQniMU',
 });
 
-//tra ve log http
-app.use(morgan('combined'))
+// //tra ve log http
+// app.use(morgan('combined'))
 
 //notification
 const cookieParser = require('cookie-parser');

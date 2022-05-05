@@ -14,7 +14,7 @@ const shipHistory = require('../models/shipHistory');
 const bookShip = require('../models/bookShip');
 const moment = require('moment')
 const { io } = require("socket.io-client");
-const urlSocketIO = "http://192.168.1.9:8002"
+const urlSocketIO = "http://192.168.0.107:8002"
 
 
 
@@ -754,7 +754,7 @@ class AdminController {
             var timeRevenue = req.query.timeInput
             var today
             if (timeRevenue) {
-                today = moment(timeRevenue, 'MM-DD-YYYY').startOf('day')
+                today = moment(timeRevenue, 'DD-MM-YYYY').startOf('day')
             }
             else today = moment().startOf('day')
             var data = await orderHistory.find({
@@ -781,15 +781,73 @@ class AdminController {
                 total = total + dataShip[i].total
             }
 
+            //week
+            var todayWeek = moment().startOf('day')
+
+            var arrDay = []
+            var dem = 0
+
+            for (var i = todayWeek.isoWeekday() - 1; i > 0; i--) {
+                var temp = moment(todayWeek)
+                arrDay[dem] = temp.subtract(i, 'days')
+                dem++
+            }
+
+            arrDay[dem] = todayWeek
+            dem++
+
+            for (var i = 1; i <= 7 - todayWeek.isoWeekday(); i++) {
+                var temp = moment(todayWeek)
+                arrDay[dem] = temp.add(i, 'days')
+                dem++
+            }
+
+            var arrTotal = []
+            var totalWeek = 0
+            for (var i = 0; i < 7; i++) {
+                var dayFind = arrDay[i]
+                var data = await orderHistory.find({
+                    updatedAt: {
+                        $gte: dayFind.startOf('day').toDate(),
+                        $lte: moment(dayFind).endOf('day').toDate()
+                    },
+                    state: "Đã thanh toán"
+                })
+
+                var totalTempWeek = 0
+
+                for (var j = 0; j < data.length; j++) {
+                    totalTempWeek = totalTempWeek + data[j].total
+                }
+
+                var dataShip = await shipHistory.find({
+                    updatedAt: {
+                        $gte: dayFind.startOf('day').toDate(),
+                        $lte: moment(dayFind).endOf('day').toDate()
+                    },
+                    state: "Đã hoàn thành"
+                })
+
+                for (var j = 0; j < dataShip.length; j++) {
+                    totalTempWeek = totalTempWeek + dataShip[j].total
+                }
+                totalWeek = totalWeek + totalTempWeek
+                arrTotal[i] = totalTempWeek
+            }
+
+            for(var i = 0;i<7;i++){
+                arrDay[i] = arrDay[i].format('DD/MM/YYYY');
+            }
+
             //year
             var date = new Date()
             var year = date.getFullYear()
             var arr = []
             for (var i = 1; i <= 12; i++) {
-                var currentDate = moment(year + '-' + i)
+                var currentDate = moment(year + '-' + i,'YYYY-MM')
                 var orders = await orderHistory.find({
                     updatedAt: {
-                        $gte: currentDate.toDate(),
+                        $gte: currentDate.startOf('month').toDate(),
                         $lte: moment(currentDate).endOf('month').toDate()
                     },
                     state: "Đã thanh toán"
@@ -817,7 +875,11 @@ class AdminController {
                 {
                     layout: 'admin',
                     total: total,
-                    arr: arr
+                    arr: arr,
+                    totalWeek : totalWeek,
+                    arrTotalWeek: arrTotal,
+                    arrDay: arrDay,
+                    today: today.format("DD/MM/YYYY")
                 })
         }
         catch (err) {
@@ -862,7 +924,7 @@ class AdminController {
             }
             var arr = []
             for (var i = 1; i <= 12; i++) {
-                var currentDate = moment(year + '-' + i)
+                var currentDate = moment(year + '-' + i,'YYYY-MM')
                 var orders = await orderHistory.find({
                     updatedAt: {
                         $gte: currentDate.toDate(),
@@ -1009,6 +1071,85 @@ class AdminController {
             req.session.message = {
                 type: 'warning',
                 intro: 'Xác nhận thanh toán thất bại',
+                message: ''
+            }
+            res.redirect('back')
+            console.log(err)
+        }
+    }
+
+    async weeklyRevenue(req, res, next) {
+        try {
+            var daySend = req.query.daySend
+            var today
+            if(daySend) today = moment(daySend, 'DD-MM-YYYY')
+            else today = moment()
+
+            var arrDay = []
+            var dem = 0
+
+            for (var i = today.isoWeekday() - 1; i > 0; i--) {
+                var temp = moment(today)
+                arrDay[dem] = temp.subtract(i, 'days')
+                dem++
+            }
+
+            arrDay[dem] = today
+            dem++
+
+            for (var i = 1; i <= 7 - today.isoWeekday(); i++) {
+                var temp = moment(today)
+                arrDay[dem] = temp.add(i, 'days')
+                dem++
+            }
+
+            var arrTotal = []
+            var totalWeek = 0
+            for (var i = 0; i < 7; i++) {
+                var dayFind = arrDay[i]
+                var data = await orderHistory.find({
+                    updatedAt: {
+                        $gte: dayFind.startOf('day').toDate(),
+                        $lte: moment(dayFind).endOf('day').toDate()
+                    },
+                    state: "Đã thanh toán"
+                })
+
+                var total = 0
+
+                for (var j = 0; j < data.length; j++) {
+                    total = total + data[j].total
+                }
+
+                var dataShip = await shipHistory.find({
+                    updatedAt: {
+                        $gte: dayFind.startOf('day').toDate(),
+                        $lte: moment(dayFind).endOf('day').toDate()
+                    },
+                    state: "Đã hoàn thành"
+                })
+
+                for (var j = 0; j < dataShip.length; j++) {
+                    total = total + dataShip[j].total
+                }
+                totalWeek = totalWeek + total
+                arrTotal[i] = total
+            }
+
+            for(var i = 0;i<7;i++){
+                arrDay[i] = arrDay[i].format('DD/MM/YYYY');
+            }
+
+            res.json({
+                arrDay: arrDay,
+                arrTotal: arrTotal,
+                totalWeek: totalWeek
+            })
+        }
+        catch (err) {
+            req.session.message = {
+                type: 'warning',
+                intro: 'lỗi tải trang!',
                 message: ''
             }
             res.redirect('back')

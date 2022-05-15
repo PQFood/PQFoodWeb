@@ -5,7 +5,6 @@ const { mutipleMongooseToObject } = require('../../util/mongoose');
 const { MongooseToObject } = require('../../util/mongoose');
 const sha256 = require('sha256');
 const staff = require('../models/staff');
-const infoStaff = require('../models/infoStaff');
 const dinnerTable = require('../models/dinnerTable');
 const warehouse = require('../models/warehouse');
 const order = require('../models/order');
@@ -14,7 +13,7 @@ const shipHistory = require('../models/shipHistory');
 const bookShip = require('../models/bookShip');
 const moment = require('moment')
 const { io } = require("socket.io-client");
-const urlSocketIO = "http://192.168.0.107:8002"
+const urlSocketIO = "http://192.168.175.23:8002"
 
 
 
@@ -262,7 +261,7 @@ class AdminController {
 
     async staff(req, res, next) {
         try {
-            var infoStaffFind = await infoStaff.find({})
+            var infoStaffFind = await staff.find({})
             res.render('staffAdmin',
                 {
                     layout: 'admin',
@@ -293,13 +292,8 @@ class AdminController {
             var pass = sha256(req.body.password)
             const staffNew = new staff(req.body)
             staffNew.password = pass
-            const infoStaffNew = new infoStaff(req.body)
-
-            // res.json(staffNew + infoStaffNew)
-            //add
             var resultUploadStaff = await staffNew.save()
-            var resultUploadÌnoStaff = await infoStaffNew.save()
-            if (resultUploadStaff && resultUploadÌnoStaff) {
+            if (resultUploadStaff) {
                 req.session.message = {
                     type: 'success',
                     intro: 'Thêm nhân viên thành công!',
@@ -329,7 +323,7 @@ class AdminController {
     async editStaff(req, res, next) {
         try {
             var slug = req.params.slug
-            var infoStaffFind = await infoStaff.findOne({ userName: slug })
+            var infoStaffFind = await staff.findOne({ userName: slug })
             res.render('editStaff',
                 {
                     layout: 'admin',
@@ -345,8 +339,7 @@ class AdminController {
         try {
             var slug = req.params.slug
             var resultStaff = await staff.deleteOne({ userName: slug })
-            var resultInfoStaff = await infoStaff.deleteOne({ userName: slug })
-            if (resultStaff && resultInfoStaff) {
+            if (resultStaff) {
                 req.session.message = {
                     type: 'success',
                     intro: 'Xóa nhân viên thành công!',
@@ -376,7 +369,7 @@ class AdminController {
     async submitEditStaff(req, res, next) {
         try {
             var slug = req.params.slug
-            var result = await infoStaff.updateOne({ userName: slug }, {
+            var result = await staff.updateOne({ userName: slug }, {
                 name: req.body.name,
                 phoneNumber: req.body.phoneNumber,
                 position: req.body.position,

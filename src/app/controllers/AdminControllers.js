@@ -13,7 +13,7 @@ const shipHistory = require('../models/shipHistory');
 const bookShip = require('../models/bookShip');
 const moment = require('moment')
 const { io } = require("socket.io-client");
-const urlSocketIO = "http://192.168.175.23:8002"
+const urlSocketIO = "http://192.168.1.20:8002"
 
 
 
@@ -884,11 +884,12 @@ class AdminController {
 
     async encash(req, res, next) {
         try {
-            var histories = await orderHistory.find({ state: ["Đã hủy", "Đã thanh toán"] }).sort({ updatedAt: -1 }).limit(20)
+            var histories = await orderHistory.find({ state: ["Đã hủy", "Đã thanh toán"] }).sort({ updatedAt: -1 }).limit(50)
             var waitConfirm = await orderHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
             var waitPayment = await order.find({}).sort({ updatedAt: 1 })
+            var currentShip = await bookShip.find({}).sort({ updatedAt: 1 })
             var waitPaymentShip = await shipHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
-            var historiesShip = await shipHistory.find({ state: ["Đã hủy", "Đã hoàn thành"] }).sort({ updatedAt: -1 }).limit(20)
+            var historiesShip = await shipHistory.find({ state: ["Đã hủy", "Đã hoàn thành"] }).sort({ updatedAt: -1 }).limit(50)
 
             res.render('encash',
                 {
@@ -898,6 +899,7 @@ class AdminController {
                     waitPayment: mutipleMongooseToObject(waitPayment),
                     waitPaymentShip: mutipleMongooseToObject(waitPaymentShip),
                     historiesShip: mutipleMongooseToObject(historiesShip),
+                    currentShip: mutipleMongooseToObject(currentShip),
                 })
         }
         catch (err) {
@@ -1149,6 +1151,129 @@ class AdminController {
             console.log(err)
         }
     }
+
+    async deleteCurrentShip(req, res, next) {
+        try {
+            var orderId = req.params.slug
+            var bookShipFind = await bookShip.findOne({ orderId: orderId })
+            var socket = io(urlSocketIO);
+            var bookShipHistoryNew = {}
+            bookShipHistoryNew.orderId = bookShipFind.orderId
+            bookShipHistoryNew.note = bookShipFind.note
+            bookShipHistoryNew.order = bookShipFind.order
+            bookShipHistoryNew.total = bookShipFind.total
+            bookShipHistoryNew.state = "Đã hủy"
+            bookShipHistoryNew.staff = bookShipFind.staff
+            bookShipHistoryNew.phoneNumber = bookShipFind.phoneNumber
+            bookShipHistoryNew.name = bookShipFind.name
+            bookShipHistoryNew.address = bookShipFind.address
+            bookShipHistoryNew.reason = "Chủ quán hủy"
+
+            bookShipHistoryNew = new shipHistory(bookShipHistoryNew)
+            var resultDelete = await bookShip.deleteOne({ orderId: orderId })
+            var resultInsert = await bookShipHistoryNew.save()
+
+            if (resultInsert && resultDelete) {
+                socket.emit("sendNotificationAdminCancelShip", {
+                    orderId: orderId,
+                  })
+                socket.emit('forceDisconnect');
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa hóa đơn thành công!',
+                    message: ''
+                }
+            }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa hóa đơn thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
+        }
+        catch (err) {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xóa hóa đơn thất bại',
+                message: ''
+            }
+            res.redirect('back')
+            console.log(err)
+        }
+    }
+    async deleteOrderPay(req,res,next){
+        try{
+            var result = await orderHistory.updateOne({ orderId: req.params.slug }, {
+                state: "Đã hủy",
+                reason: "Chủ quán hủy"
+            })
+
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa hóa đơn thành công!',
+                    message: ''
+                }
+            }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa hóa đơn thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
+
+        }
+        catch (err) {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xóa hóa đơn thất bại',
+                message: ''
+            }
+            res.redirect('back')
+            console.log(err)
+        }
+    }
+
+    async deleteShipPay(req,res,next){
+        try{
+            var result = await shipHistory.updateOne({ orderId: req.params.slug }, {
+                state: "Đã hủy",
+                reason: "Chủ quán hủy"
+            })
+
+            if (result) {
+                req.session.message = {
+                    type: 'success',
+                    intro: 'Xóa hóa đơn thành công!',
+                    message: ''
+                }
+            }
+            else {
+                req.session.message = {
+                    type: 'warning',
+                    intro: 'Xóa hóa đơn thất bại',
+                    message: ''
+                }
+            }
+            res.redirect('back')
+
+        }
+        catch (err) {
+            req.session.message = {
+                type: 'warning',
+                intro: 'Xóa hóa đơn thất bại',
+                message: ''
+            }
+            res.redirect('back')
+            console.log(err)
+        }
+    }
+
+    
 
 
 }

@@ -3,8 +3,11 @@ const router = express.Router();
 const admincontroller = require('../app/controllers/AdminControllers');
 
 
-router.get('/weeklyRevenue', admincontroller.weeklyRevenue);
 
+router.get('/deleteShipPay/:slug', admincontroller.deleteShipPay);
+router.get('/deleteOrderPay/:slug', admincontroller.deleteOrderPay);
+router.get('/deleteCurrentShip/:slug', admincontroller.deleteCurrentShip);
+router.get('/weeklyRevenue', admincontroller.weeklyRevenue);
 router.get('/paymentConfirmShip/:slug', admincontroller.paymentConfirmShip);
 router.get('/deleteOrder/:slug', admincontroller.deleteOrder);
 router.get('/paymentConfirm/:slug', admincontroller.paymentConfirm);

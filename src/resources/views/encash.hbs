@@ -6,8 +6,8 @@
         <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
             <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
                 <li class="nav-item">
-                    <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active" data-bs-toggle="pill"
-                        href="#tab-1">
+                    <a id="tabActiveFirst" class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active"
+                        data-bs-toggle="pill" href="#tab-1">
                         <i class="fas fa-money-check-alt fa-2x text-primary"></i>
                         <div class="ps-3">
                             <small class="text-body">Xác nhận</small>
@@ -35,7 +35,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill" href="#tab-3">
+                    <a class="d-flex align-items-center text-start mx-3 pb-3 me-0" data-bs-toggle="pill"
+                        href="#tab-ship-current">
+                        <i class="fas fa-shipping-fast fa-2x text-primary"></i>
+                        <div class="ps-3">
+                            <small class="text-body">Hóa đơn</small>
+                            <h6 class="mt-n1 mb-0">Ship</h6>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a id="tabOrderActive" class="d-flex align-items-center text-start mx-3 me-0 pb-3"
+                        data-bs-toggle="pill" href="#tab-3">
                         <i class="fas fa-history fa-2x text-primary"></i>
                         <div class="ps-3">
                             <small class="text-body">Lịch sử</small>
@@ -91,8 +102,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="/admin/paymentConfirm/{{this.orderId}}"><button
-                                    class="btn btn-primary w-100 py-3">Xác nhận</button></a>
+                            <div class="d-flex justify-content-between">
+                                <div class="w-50">
+                                    <a href="/admin/paymentConfirm/{{this.orderId}}"><button
+                                            class="btn btn-primary w-100 py-3">Xác nhận</button></a>
+                                </div>
+                                <div class="w-50">
+                                    <button class="btn btn-danger w-100 py-3"
+                                        onclick="btnDeleteOrderPay('{{this.orderId}}')">Hủy</button>
+                                </div>
+                            </div>
+
                         </div>
                         {{/each}}
                         {{else}}
@@ -102,7 +122,6 @@
                     </div>
                 </div>
                 <div id="tab-ship" class="tab-pane fade show p-0">
-
                     <div class="row g-4">
                         {{#if waitPaymentShip}}
                         {{#each waitPaymentShip}}
@@ -136,12 +155,24 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="/admin/paymentConfirmShip/{{this.orderId}}"><button
-                                    class="btn btn-primary w-100 py-3">Xác nhận</button></a>
+
+                            <div class="d-flex justify-content-between">
+                                <div class="w-50">
+                                    <a href="/admin/paymentConfirmShip/{{this.orderId}}"><button
+                                            class="btn btn-primary w-100 py-3">Xác nhận</button></a>
+                                </div>
+                                <div class="w-50">
+                                    <button class="btn btn-danger w-100 py-3"
+                                        onclick="btnDeleteShipPay('{{this.orderId}}')">Hủy</button>
+                                </div>
+                            </div>
+
+
                         </div>
                         {{/each}}
                         {{else}}
-                        <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không có hóa đơn ship nào
+                        <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không có hóa đơn
+                            ship nào
                             chờ xác nhận thanh toán!</h3>
                         {{/if}}
                     </div>
@@ -195,8 +226,64 @@
                         {{/if}}
                     </div>
                 </div>
+
+                <div id="tab-ship-current" class="tab-pane fade show p-0">
+                    <div class="row g-4">
+                        {{#if currentShip}}
+                        {{#each currentShip}}
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center p-2" style="background-color: lightblue;">
+                                <div class="w-100 d-flex flex-column text-start">
+                                    <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                        <span>
+                                            {{this.name}} - {{this.orderId}}
+                                        </span>
+                                        <span class="number text-primary">{{this.total}}</span>
+                                    </h5>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="">
+                                            {{#each this.order}}
+                                            <div class="">
+                                                <small class="fst-italic">{{this.name}} - SL: {{this.quantity}} - ĐG:
+                                                    <span class="number">{{multiplication this.price
+                                                        this.quantity}}</span></small>
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                        <div class="">
+                                            {{#each this.staff}}
+                                            <div class="d-flex">
+                                                <small class="fst-italic" style="display: block;">{{this.act}}:</small>
+                                                <small class="fst-italic">{{this.name}}</small>
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary w-100 py-3"
+                                onclick="btnDeleteShip('{{this.orderId}}')">Hủy</button>
+                        </div>
+                        {{/each}}
+                        {{else}}
+                        <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không có hóa đơn
+                            ship nào!</h3>
+                        {{/if}}
+                    </div>
+                </div>
+
                 <div id="tab-3" class="tab-pane fade show p-0">
                     <div class="row g-4">
+                        <form method="get">
+                            <div class="input-group justify-content-center">
+                                <div class="form-outline " style="height: 40px;">
+                                    <input type="text" id="searchOrder" name="searchOrder" class="form-control" placeholder="Tìm kiếm" />
+                                </div>&nbsp;&nbsp;
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
                         {{#if histories}}
                         {{#each histories}}
                         <div class="col-lg-6">
@@ -229,9 +316,16 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="" style="background-color: lightblue;">
-                                Trạng thái: <span style="color: coral; font-size: 20px;"
-                                    class="stateHistory">{{this.state}}</span>
+                                {{#if this.reason}}
+                                <span style="font-weight: bold; text-align: lef;, font-weight: bold;">Lý do hủy:
+                                    {{this.reason}}</span>
+                                {{/if}}
+                                <div>
+                                    Trạng thái: <span style="color: coral; font-size: 20px;"
+                                        class="stateHistory">{{this.state}}</span>
+                                </div>
                             </div>
                         </div>
                         {{/each}}
@@ -244,6 +338,15 @@
 
                 <div id="tab-shipHistory" class="tab-pane fade show p-0">
                     <div class="row g-4">
+                        <div class="input-group">
+                            <div class="form-outline">
+                                <input type="search" id="form1" class="form-control" />
+                                <label class="form-label" for="form1">Search</label>
+                            </div>
+                            <button type="button" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
                         {{#if historiesShip}}
                         {{#each historiesShip}}
                         <div class="col-lg-6">
@@ -274,6 +377,10 @@
                                             {{/each}}
                                         </div>
                                     </div>
+                                    {{#if this.reason}}
+                                    <span style="font-weight: bold; text-align: center">Lý do hủy:
+                                        {{this.reason}}</span>
+                                    {{/if}}
                                 </div>
                             </div>
                             <div class="" style="background-color: lightblue;">
@@ -283,12 +390,12 @@
                         </div>
                         {{/each}}
                         {{else}}
-                        <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không có hóa đơn ship
-                            nào!</h3>
+                        <h3 class="mt-3 mb-3" style="text-align: center; color:rgb(194, 174, 230);">Không có hóa đơn
+                            ship nào!</h3>
                         {{/if}}
                     </div>
                 </div>
-                
+
 
             </div>
         </div>
@@ -307,7 +414,7 @@
 
     function btnDelete(slug) {
         Swal.fire({
-            title: 'Bạn có chắc muốn xóa hóa đơn này?',
+            title: 'Bạn có chắc muốn hủy hóa đơn này?',
             text: "Bạn cần cân nhắc trước khi tiếp tục!",
             icon: 'warning',
             showCancelButton: true,
@@ -320,6 +427,64 @@
                 window.location.replace("/admin/deleteOrder/" + slug);
             }
         })
+    }
+
+    function btnDeleteShip(slug) {
+        Swal.fire({
+            title: 'Bạn có chắc muốn hủy hóa đơn này?',
+            text: "Bạn cần cân nhắc trước khi tiếp tục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Tiếp tục',
+            cancelButtonText: 'Quay lại'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.replace("/admin/deleteCurrentShip/" + slug);
+            }
+        })
+    }
+
+    function btnDeleteOrderPay(slug) {
+        Swal.fire({
+            title: 'Bạn có chắc muốn hủy hóa đơn này?',
+            text: "Bạn cần cân nhắc trước khi tiếp tục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Tiếp tục',
+            cancelButtonText: 'Quay lại'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.replace("/admin/deleteOrderPay/" + slug);
+            }
+        })
+    }
+    function btnDeleteShipPay(slug) {
+        Swal.fire({
+            title: 'Bạn có chắc muốn hủy hóa đơn này?',
+            text: "Bạn cần cân nhắc trước khi tiếp tục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Tiếp tục',
+            cancelButtonText: 'Quay lại'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.replace("/admin/deleteShipPay/" + slug);
+            }
+        })
+    }
+
+    var pathName = window.location.href;
+    if (pathName.search('searchOrder') > 0) {
+        document.getElementById("tabActiveFirst").classList.remove("active");
+        document.getElementById("tab-1").classList.remove("active");
+        document.getElementById("tabOrderActive").classList.add("active");
+        document.getElementById("tab-3").classList.add("active");
     }
 
 </script>

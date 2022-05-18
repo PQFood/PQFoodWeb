@@ -828,7 +828,7 @@ class AdminController {
                 arrTotal[i] = totalTempWeek
             }
 
-            for(var i = 0;i<7;i++){
+            for (var i = 0; i < 7; i++) {
                 arrDay[i] = arrDay[i].format('DD/MM/YYYY');
             }
 
@@ -837,7 +837,7 @@ class AdminController {
             var year = date.getFullYear()
             var arr = []
             for (var i = 1; i <= 12; i++) {
-                var currentDate = moment(year + '-' + i,'YYYY-MM')
+                var currentDate = moment(year + '-' + i, 'YYYY-MM')
                 var orders = await orderHistory.find({
                     updatedAt: {
                         $gte: currentDate.startOf('month').toDate(),
@@ -869,7 +869,7 @@ class AdminController {
                     layout: 'admin',
                     total: total,
                     arr: arr,
-                    totalWeek : totalWeek,
+                    totalWeek: totalWeek,
                     arrTotalWeek: arrTotal,
                     arrDay: arrDay,
                     today: today.format("DD/MM/YYYY")
@@ -884,21 +884,47 @@ class AdminController {
 
     async encash(req, res, next) {
         try {
-            var histories = await orderHistory.find({ state: ["Đã hủy", "Đã thanh toán"] }).sort({ updatedAt: -1 }).limit(50)
+            var histories
+            var historiesShip
+            if (req.query.searchOrder) {
+                histories = await orderHistory.find({ orderId: new RegExp('.*' + req.query.searchOrder + '.*') }).sort({ updatedAt: -1 })
+            }
+            else {
+                histories = await orderHistory.find({ state: ["Đã hủy", "Đã thanh toán"] }).sort({ updatedAt: -1 }).limit(50)
+            }
+            if (req.query.searchShip) {
+                historiesShip = await shipHistory.find({ orderId: new RegExp('.*' + req.query.searchShip + '.*') }).sort({ updatedAt: -1 })
+            }
+            else {
+                historiesShip = await shipHistory.find({ state: ["Đã hủy", "Đã hoàn thành"] }).sort({ updatedAt: -1 }).limit(50)
+            }
+            
+            historiesShip = mutipleMongooseToObject(historiesShip)
+            histories = mutipleMongooseToObject(histories)
+
+            historiesShip.map(historiesShip => {
+                historiesShip.updatedAt = moment(historiesShip.updatedAt).format("LT,DD-MM-YYYY")
+                return historiesShip
+            })
+
+            histories.map(histories => {
+                histories.updatedAt = moment(histories.updatedAt).format("LT,DD-MM-YYYY")
+                return histories
+            })
+
             var waitConfirm = await orderHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
             var waitPayment = await order.find({}).sort({ updatedAt: 1 })
             var currentShip = await bookShip.find({}).sort({ updatedAt: 1 })
             var waitPaymentShip = await shipHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
-            var historiesShip = await shipHistory.find({ state: ["Đã hủy", "Đã hoàn thành"] }).sort({ updatedAt: -1 }).limit(50)
 
             res.render('encash',
                 {
                     layout: 'admin',
-                    histories: mutipleMongooseToObject(histories),
+                    histories: histories,
                     waitConfirm: mutipleMongooseToObject(waitConfirm),
                     waitPayment: mutipleMongooseToObject(waitPayment),
                     waitPaymentShip: mutipleMongooseToObject(waitPaymentShip),
-                    historiesShip: mutipleMongooseToObject(historiesShip),
+                    historiesShip: historiesShip,
                     currentShip: mutipleMongooseToObject(currentShip),
                 })
         }
@@ -919,7 +945,7 @@ class AdminController {
             }
             var arr = []
             for (var i = 1; i <= 12; i++) {
-                var currentDate = moment(year + '-' + i,'YYYY-MM')
+                var currentDate = moment(year + '-' + i, 'YYYY-MM')
                 var orders = await orderHistory.find({
                     updatedAt: {
                         $gte: currentDate.toDate(),
@@ -1077,7 +1103,7 @@ class AdminController {
         try {
             var daySend = req.query.daySend
             var today
-            if(daySend) today = moment(daySend, 'DD-MM-YYYY')
+            if (daySend) today = moment(daySend, 'DD-MM-YYYY')
             else today = moment()
 
             var arrDay = []
@@ -1131,7 +1157,7 @@ class AdminController {
                 arrTotal[i] = total
             }
 
-            for(var i = 0;i<7;i++){
+            for (var i = 0; i < 7; i++) {
                 arrDay[i] = arrDay[i].format('DD/MM/YYYY');
             }
 
@@ -1176,7 +1202,7 @@ class AdminController {
             if (resultInsert && resultDelete) {
                 socket.emit("sendNotificationAdminCancelShip", {
                     orderId: orderId,
-                  })
+                })
                 socket.emit('forceDisconnect');
                 req.session.message = {
                     type: 'success',
@@ -1203,8 +1229,8 @@ class AdminController {
             console.log(err)
         }
     }
-    async deleteOrderPay(req,res,next){
-        try{
+    async deleteOrderPay(req, res, next) {
+        try {
             var result = await orderHistory.updateOne({ orderId: req.params.slug }, {
                 state: "Đã hủy",
                 reason: "Chủ quán hủy"
@@ -1238,8 +1264,8 @@ class AdminController {
         }
     }
 
-    async deleteShipPay(req,res,next){
-        try{
+    async deleteShipPay(req, res, next) {
+        try {
             var result = await shipHistory.updateOne({ orderId: req.params.slug }, {
                 state: "Đã hủy",
                 reason: "Chủ quán hủy"
@@ -1273,7 +1299,7 @@ class AdminController {
         }
     }
 
-    
+
 
 
 }

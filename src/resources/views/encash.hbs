@@ -7,7 +7,7 @@
             <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
                 <li class="nav-item">
                     <a id="tabActiveFirst" class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active"
-                        data-bs-toggle="pill" href="#tab-1">
+                        data-bs-toggle="pill" href="#confirmOrder">
                         <i class="fas fa-money-check-alt fa-2x text-primary"></i>
                         <div class="ps-3">
                             <small class="text-body">Xác nhận</small>
@@ -26,7 +26,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="d-flex align-items-center text-start mx-3 pb-3 me-0" data-bs-toggle="pill" href="#tab-2">
+                    <a class="d-flex align-items-center text-start mx-3 pb-3 me-0" data-bs-toggle="pill"
+                        href="#order-current">
                         <i class="fas fa-money-bill fa-2x text-primary"></i>
                         <div class="ps-3">
                             <small class="text-body">Hóa đơn</small>
@@ -46,7 +47,7 @@
                 </li>
                 <li class="nav-item">
                     <a id="tabOrderActive" class="d-flex align-items-center text-start mx-3 me-0 pb-3"
-                        data-bs-toggle="pill" href="#tab-3">
+                        data-bs-toggle="pill" href="#orderHistory">
                         <i class="fas fa-history fa-2x text-primary"></i>
                         <div class="ps-3">
                             <small class="text-body">Lịch sử</small>
@@ -55,8 +56,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill"
-                        href="#tab-shipHistory">
+                    <a id="activeShipHistory" class="d-flex align-items-center text-start mx-3 me-0 pb-3"
+                        data-bs-toggle="pill" href="#tab-shipHistory">
                         <i class="fas fa-history fa-2x text-primary"></i>
                         <div class="ps-3">
                             <small class="text-body">Lịch sử</small>
@@ -67,7 +68,7 @@
 
             </ul>
             <div class="tab-content">
-                <div id="tab-1" class="tab-pane fade show p-0 active">
+                <div id="confirmOrder" class="tab-pane fade show p-0 active">
 
                     <div class="row g-4">
                         {{#if waitConfirm}}
@@ -177,7 +178,7 @@
                         {{/if}}
                     </div>
                 </div>
-                <div id="tab-2" class="tab-pane fade show p-0">
+                <div id="order-current" class="tab-pane fade show p-0">
                     <div class="row g-4">
                         {{#if waitPayment}}
                         {{#each waitPayment}}
@@ -272,12 +273,13 @@
                     </div>
                 </div>
 
-                <div id="tab-3" class="tab-pane fade show p-0">
+                <div id="orderHistory" class="tab-pane fade show p-0">
                     <div class="row g-4">
-                        <form method="get">
+                        <form method="get" action="">
                             <div class="input-group justify-content-center">
-                                <div class="form-outline " style="height: 40px;">
-                                    <input type="text" id="searchOrder" name="searchOrder" class="form-control" placeholder="Tìm kiếm" />
+                                <div class="form-outline " style="height: 35px;">
+                                    <input type="text" id="searchOrder" name="searchOrder" class="form-control"
+                                        placeholder="Tìm kiếm" />
                                 </div>&nbsp;&nbsp;
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-search"></i>
@@ -319,13 +321,14 @@
 
                             <div class="" style="background-color: lightblue;">
                                 {{#if this.reason}}
-                                <span style="font-weight: bold; text-align: lef;, font-weight: bold;">Lý do hủy:
+                                <span style="font-weight: bold; font-weight: bold;">Lý do hủy:
                                     {{this.reason}}</span>
                                 {{/if}}
                                 <div>
                                     Trạng thái: <span style="color: coral; font-size: 20px;"
                                         class="stateHistory">{{this.state}}</span>
                                 </div>
+                                <span style="font-weight: bold; font-weight: bold;">{{this.updatedAt}}</span>
                             </div>
                         </div>
                         {{/each}}
@@ -338,15 +341,17 @@
 
                 <div id="tab-shipHistory" class="tab-pane fade show p-0">
                     <div class="row g-4">
-                        <div class="input-group">
-                            <div class="form-outline">
-                                <input type="search" id="form1" class="form-control" />
-                                <label class="form-label" for="form1">Search</label>
+                        <form method="get" action="">
+                            <div class="input-group justify-content-center">
+                                <div class="form-outline " style="height: 35px;">
+                                    <input type="text" id="searchOrder" name="searchShip" class="form-control"
+                                        placeholder="Tìm kiếm" />
+                                </div>&nbsp;&nbsp;
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i>
+                                </button>
                             </div>
-                            <button type="button" class="btn btn-primary">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
+                        </form>
                         {{#if historiesShip}}
                         {{#each historiesShip}}
                         <div class="col-lg-6">
@@ -377,15 +382,22 @@
                                             {{/each}}
                                         </div>
                                     </div>
-                                    {{#if this.reason}}
-                                    <span style="font-weight: bold; text-align: center">Lý do hủy:
-                                        {{this.reason}}</span>
-                                    {{/if}}
+
                                 </div>
+                            </div>
+                            <div class="" style="background-color: lightblue;">
+                                {{#if this.reason}}
+                                <span style="font-weight: bold; text-align: center">Lý do hủy:
+                                    {{this.reason}}</span>
+                                {{/if}}
                             </div>
                             <div class="" style="background-color: lightblue;">
                                 Trạng thái: <span style="color: coral; font-size: 20px;"
                                     class="stateHistory">{{this.state}}</span>
+                            </div>
+                            <div class="" style="background-color: lightblue;">
+                                <span style="font-size: 20px; font-weight: bold;"
+                                    class="stateHistory">{{this.updatedAt}}</span>
                             </div>
                         </div>
                         {{/each}}
@@ -482,9 +494,14 @@
     var pathName = window.location.href;
     if (pathName.search('searchOrder') > 0) {
         document.getElementById("tabActiveFirst").classList.remove("active");
-        document.getElementById("tab-1").classList.remove("active");
+        document.getElementById("confirmOrder").classList.remove("active");
         document.getElementById("tabOrderActive").classList.add("active");
-        document.getElementById("tab-3").classList.add("active");
+        document.getElementById("orderHistory").classList.add("active");
     }
-
+    if (pathName.search('searchShip') > 0) {
+        document.getElementById("tabActiveFirst").classList.remove("active");
+        document.getElementById("confirmOrder").classList.remove("active");
+        document.getElementById("activeShipHistory").classList.add("active");
+        document.getElementById("tab-shipHistory").classList.add("active");
+    }
 </script>

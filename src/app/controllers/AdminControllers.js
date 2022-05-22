@@ -13,7 +13,7 @@ const shipHistory = require('../models/shipHistory');
 const bookShip = require('../models/bookShip');
 const moment = require('moment')
 const { io } = require("socket.io-client");
-const urlSocketIO = "http://192.168.1.20:8002"
+const urlSocketIO = "http://192.168.175.23:8002"
 
 
 
@@ -886,6 +886,10 @@ class AdminController {
         try {
             var histories
             var historiesShip
+            var waitConfirm = await orderHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
+            var waitPayment = await order.find({}).sort({ updatedAt: 1 })
+            var currentShip = await bookShip.find({}).sort({ updatedAt: 1 })
+            var waitPaymentShip = await shipHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
             if (req.query.searchOrder) {
                 histories = await orderHistory.find({ orderId: new RegExp('.*' + req.query.searchOrder + '.*') }).sort({ updatedAt: -1 })
             }
@@ -901,6 +905,18 @@ class AdminController {
             
             historiesShip = mutipleMongooseToObject(historiesShip)
             histories = mutipleMongooseToObject(histories)
+            waitConfirm = mutipleMongooseToObject(waitConfirm)
+            waitPaymentShip = mutipleMongooseToObject(waitPaymentShip)
+
+            waitConfirm.map(waitConfirm => {
+                waitConfirm.updatedAt = moment(waitConfirm.updatedAt).format("LT,DD-MM-YYYY")
+                return waitConfirm
+            })
+
+            waitPaymentShip.map(waitPaymentShip => {
+                waitPaymentShip.updatedAt = moment(waitPaymentShip.updatedAt).format("LT,DD-MM-YYYY")
+                return waitPaymentShip
+            })
 
             historiesShip.map(historiesShip => {
                 historiesShip.updatedAt = moment(historiesShip.updatedAt).format("LT,DD-MM-YYYY")
@@ -912,18 +928,13 @@ class AdminController {
                 return histories
             })
 
-            var waitConfirm = await orderHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
-            var waitPayment = await order.find({}).sort({ updatedAt: 1 })
-            var currentShip = await bookShip.find({}).sort({ updatedAt: 1 })
-            var waitPaymentShip = await shipHistory.find({ state: "Chờ xác nhận" }).sort({ updatedAt: 1 })
-
             res.render('encash',
                 {
                     layout: 'admin',
                     histories: histories,
-                    waitConfirm: mutipleMongooseToObject(waitConfirm),
+                    waitConfirm: waitConfirm,
                     waitPayment: mutipleMongooseToObject(waitPayment),
-                    waitPaymentShip: mutipleMongooseToObject(waitPaymentShip),
+                    waitPaymentShip: waitPaymentShip,
                     historiesShip: historiesShip,
                     currentShip: mutipleMongooseToObject(currentShip),
                 })

@@ -9,7 +9,7 @@ const uid = new ShortUniqueId({ length: 15 });
 const sha256 = require('sha256');
 const moment = require('moment')
 const { io } = require("socket.io-client");
-const urlSocketIO = "http://192.168.175.23:8002"
+const urlSocketIO = "http://192.168.1.12:8002"
 
 class SiteController {
 

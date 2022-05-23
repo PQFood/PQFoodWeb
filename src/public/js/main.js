@@ -420,7 +420,10 @@
     $('#datetimepickerWeek').datetimepicker({
         format: 'DD/MM/YYYY'
     });
-   
+
+    $('#timeBook').datetimepicker({});
+    
+
     $('#revenueDay').validate({
         rules: {
             timeInput: "required",

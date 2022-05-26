@@ -13,7 +13,7 @@ const shipHistory = require('../models/shipHistory');
 const bookShip = require('../models/bookShip');
 const moment = require('moment')
 const { io } = require("socket.io-client");
-const urlSocketIO = "http://192.168.175.23:8002"
+const urlSocketIO = "Địa chỉ server socket"
 
 
 

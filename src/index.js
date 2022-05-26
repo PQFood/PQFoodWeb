@@ -9,9 +9,9 @@ app.use(fileupload({useTempFiles : true}));
 
 
 cloudinary.config({ 
-  cloud_name: 'pqshop', 
-  api_key: '235438731113978', 
-  api_secret: 'zOM2Llga6w4fei6pO1ey6AQniMU',
+  cloud_name: 'cloud_name', 
+  api_key: 'api_key', 
+  api_secret: 'api_secret',
 });
 
 // //tra ve log http
